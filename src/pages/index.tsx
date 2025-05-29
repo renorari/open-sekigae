@@ -1,11 +1,11 @@
+"use client";
+
 import React from "react";
 
-export default async function HomePage() {
-    return (<></>);
-}
+import { Button } from "@mui/joy";
 
-export const getConfig = async () => {
-    return {
-        "render": "static"
-    } as const;
-};
+export default function HomePage() {
+    return (<>
+        <Button>button</Button>
+    </>);
+}
