@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Box, IconButton, Typography, Sheet, Card, Avatar, CardContent, Skeleton, CardActions, Button, ButtonGroup } from "@mui/joy";
+import { Box, IconButton, Typography, Sheet, Card, Avatar, CardContent, Skeleton, CardActions, Button, ButtonGroup, List, ListItem } from "@mui/joy";
 import { KeyboardArrowLeft, KeyboardArrowRight, SettingsRounded } from "@mui/icons-material";
 
 import AnimeSwitch from "../components/AnimeSwitch";
@@ -23,22 +23,151 @@ export default function HomePage() {
     const [seats, setSeats] = useState<Map<string, number> | null>(null);
     const [next, setNext] = useState<number | null>(null);
     const [members, setMembers] = useState<Map<number, Member> | null>(null);
+    
+    const [autoLottery, setAutoLottery] = useState<boolean>(false);
+    const [frontSelect, setFrontSelect] = useState<boolean>(false);
 
     useEffect(() => {
         // 仮データ
         setMembers(new Map([
             [
+                1,
+                {
+                    "name": "佐々木優太",
+                    "pronouns": "ささきゆうた"
+                }
+            ],
+            [
+                2,
+                {
+                    "name": "山本和子",
+                    "pronouns": "やまもとかずこ"
+                }
+            ],
+            [
+                3,
+                {
+                    "name": "中村健太郎",
+                    "pronouns": "なかむらけんたろう"
+                }
+            ],
+            [
+                4,
+                {
+                    "name": "小川美穂",
+                    "pronouns": "おがわみほ"
+                }
+            ],
+            [
+                5,
+                {
+                    "name": "井上大輔",
+                    "pronouns": "いのうえだいすけ"
+                }
+            ],
+            [
+                6,
+                {
+                    "name": "斎藤千尋",
+                    "pronouns": "さいとうちひろ"
+                }
+            ],
+            [
+                7,
+                {
+                    "name": "松本龍太",
+                    "pronouns": "まつもとりゅうた"
+                }
+            ],
+            [
+                8,
+                {
+                    "name": "吉田桃子",
+                    "pronouns": "よしだももこ"
+                }
+            ],
+            [
+                9,
+                {
+                    "name": "清水拓也",
+                    "pronouns": "しみずたくや"
+                }
+            ],
+            [
+                10,
+                {
+                    "name": "石川奈々",
+                    "pronouns": "いしかわなな"
+                }
+            ],
+            [
+                11,
+                {
+                    "name": "木村聡太",
+                    "pronouns": "きむらそうた"
+                }
+            ],
+            [
                 12,
                 {
-                    "name": "名無しの権兵衛",
-                    "pronouns": "ななしのごんべえ"
+                    "name": "山田太郎",
+                    "pronouns": "やまだたろう"
                 }
             ],
             [
                 13,
                 {
-                    "name": "名無しの権兵衛2",
-                    "pronouns": "ななしのごんべえ つー"
+                    "name": "佐藤花子",
+                    "pronouns": "さとうはなこ"
+                }
+            ],
+            [
+                14,
+                {
+                    "name": "鈴木一郎",
+                    "pronouns": "すずきいちろう"
+                }
+            ],
+            [
+                15,
+                {
+                    "name": "田中美咲",
+                    "pronouns": "たなかみさき"
+                }
+            ],
+            [
+                16,
+                {
+                    "name": "高橋健太",
+                    "pronouns": "たかはしけんた"
+                }
+            ],
+            [
+                17,
+                {
+                    "name": "伊藤優子",
+                    "pronouns": "いとうゆうこ"
+                }
+            ],
+            [
+                18,
+                {
+                    "name": "渡辺翔太",
+                    "pronouns": "わたなべしょうた"
+                }
+            ],
+            [
+                19,
+                {
+                    "name": "小林明日香",
+                    "pronouns": "こばやしあすか"
+                }
+            ],
+            [
+                20,
+                {
+                    "name": "加藤雄大",
+                    "pronouns": "かとうゆうだい"
                 }
             ]
         ]));
@@ -143,14 +272,32 @@ export default function HomePage() {
                                 <Button endDecorator={<KeyboardArrowRight />} disabled={!next || !!seats?.values().find(seat => seat === next)}>抽選開始</Button>
                             </CardActions>
                         </Card>
+
+                        {/* members list */}
+                        <List sx={{ "height": "0px", "overflowY": "scroll", "flexGrow": 1 }}>
+                            <Skeleton loading={!members} animation="wave">
+                                {Array.from(members || []).map(([id, member]) => (
+                                    <ListItem key={id} sx={{ "justifyContent": "space-between" }}>
+                                        <Box display="flex" sx={{ "gap": 2, "alignItems": "center" }}>
+                                            <Avatar size="sm">{id}</Avatar>
+                                            <Box display="flex" flexDirection="column">
+                                                <Typography>{member.pronouns}</Typography>
+                                                <Typography level="title-lg">{member.name}</Typography>
+                                            </Box>
+                                        </Box>
+                                        <Button variant="outlined">選択</Button>
+                                    </ListItem>
+                                ))}
+                            </Skeleton>
+                        </List>
                     </Card>
 
                     {/* settings */}
                     <Card>
-                        <Typography component="label" startDecorator={<AnimeSwitch />}>
+                        <Typography component="label" startDecorator={<AnimeSwitch checked={autoLottery} onChange={() => setAutoLottery(!autoLottery)} />}>
                             自動抽選
                         </Typography>
-                        <Typography component="label" startDecorator={<AnimeSwitch />}>
+                        <Typography component="label" startDecorator={<AnimeSwitch checked={frontSelect} onChange={() => setFrontSelect(!frontSelect)} />}>
                             前寄り指定
                         </Typography>
                     </Card>
@@ -195,7 +342,7 @@ export default function HomePage() {
                                                 }
 
                                                 return (
-                                                    <Card key={`${rowIndex}-${colIndex}`} sx={{ "flex": 1, "height": "100%", "opacity": disabledSeats?.get(`${realRow}-${realCol}`) ? 0.25 : 1 }} id={`seat-${realRow}-${realCol}`} variant="soft" color={seatFrontThreshold && realRow <= seatFrontThreshold ? "primary" : "neutral"}>
+                                                    <Card key={`${rowIndex}-${colIndex}`} sx={{ "flex": 1, "height": "100%", "opacity": disabledSeats?.get(`${realRow}-${realCol}`) ? 0.25 : 1, "transition": "background 0.2s" }} id={`seat-${realRow}-${realCol}`} variant="soft" color={frontSelect && seatFrontThreshold && realRow <= seatFrontThreshold ? "primary" : "neutral"}>
                                                         <CardContent sx={{ "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
                                                             <Typography level="h1">
                                                                 {(() => {
