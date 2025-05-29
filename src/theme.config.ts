@@ -1,5 +1,3 @@
-"use client";
-
 import { extendTheme } from "@mui/joy/styles";
 
 const themeColor = {
