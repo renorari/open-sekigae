@@ -9,7 +9,7 @@ import theme from "../theme.config";
 
 type RootLayoutProps = { children: ReactNode };
 
-const baseUrl = process.env.BASE_URL || "https://sekigae.renorari.net";
+const baseUrl = import.meta.env.BASE_URL || "https://sekigae.renorari.net";
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const router = useRouter();
