@@ -261,10 +261,10 @@ export default function HomePage() {
                             </CardContent>
                             <CardActions>
                                 <ButtonGroup variant="soft" >
-                                    <IconButton>
+                                    <IconButton onClick={() => {setNext(next ? next - 1 : null);}} disabled={!next || next <= 1}>
                                         <KeyboardArrowLeft />
                                     </IconButton>
-                                    <IconButton>
+                                    <IconButton onClick={() => {setNext(next ? next + 1 : null);}} disabled={!next || next >= (members ? members.size : 0)}>
                                         <KeyboardArrowRight />
                                     </IconButton>
                                 </ButtonGroup>
@@ -285,7 +285,9 @@ export default function HomePage() {
                                                 <Typography level="title-lg">{member.name}</Typography>
                                             </Box>
                                         </Box>
-                                        <Button variant="outlined">選択</Button>
+                                        <Button variant="outlined" onClick={() => {setNext(id);}} disabled={next === id}>
+                                            選択
+                                        </Button>
                                     </ListItem>
                                 ))}
                             </Skeleton>
