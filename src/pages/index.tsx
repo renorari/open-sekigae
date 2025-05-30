@@ -1,9 +1,14 @@
 "use client";
 
+import "../styles/main.css";
+
 import React, { useEffect, useState } from "react";
 
-import { Box, IconButton, Typography, Sheet, Card, Avatar, CardContent, Skeleton, CardActions, Button, ButtonGroup, List, ListItem } from "@mui/joy";
 import { KeyboardArrowLeft, KeyboardArrowRight, SettingsRounded } from "@mui/icons-material";
+import {
+    Avatar, Box, Button, ButtonGroup, Card, CardActions, CardContent, IconButton, List, ListItem,
+    Sheet, Skeleton, Typography
+} from "@mui/joy";
 
 import AnimeSwitch from "../components/AnimeSwitch";
 
@@ -23,7 +28,7 @@ export default function HomePage() {
     const [seats, setSeats] = useState<Map<string, number> | null>(null);
     const [next, setNext] = useState<number | null>(null);
     const [members, setMembers] = useState<Map<number, Member> | null>(null);
-    
+
     const [autoLottery, setAutoLottery] = useState<boolean>(false);
     const [frontSelect, setFrontSelect] = useState<boolean>(false);
 
@@ -169,6 +174,174 @@ export default function HomePage() {
                     "name": "加藤雄大",
                     "pronouns": "かとうゆうだい"
                 }
+            ],
+            [
+                21,
+                {
+                    "name": "中野直樹",
+                    "pronouns": "なかのなおき"
+                }
+            ],
+            [
+                22,
+                {
+                    "name": "遠藤さくら",
+                    "pronouns": "えんどうさくら"
+                }
+            ],
+            [
+                23,
+                {
+                    "name": "藤田隆一",
+                    "pronouns": "ふじたりゅういち"
+                }
+            ],
+            [
+                24,
+                {
+                    "name": "長谷川真理",
+                    "pronouns": "はせがわまり"
+                }
+            ],
+            [
+                25,
+                {
+                    "name": "村上誠司",
+                    "pronouns": "むらかみせいじ"
+                }
+            ],
+            [
+                26,
+                {
+                    "name": "大野綾香",
+                    "pronouns": "おおのあやか"
+                }
+            ],
+            [
+                27,
+                {
+                    "name": "西村拓海",
+                    "pronouns": "にしむらたくみ"
+                }
+            ],
+            [
+                28,
+                {
+                    "name": "松田恵子",
+                    "pronouns": "まつだけいこ"
+                }
+            ],
+            [
+                29,
+                {
+                    "name": "野口達也",
+                    "pronouns": "のぐちたつや"
+                }
+            ],
+            [
+                30,
+                {
+                    "name": "岡田千晶",
+                    "pronouns": "おかだちあき"
+                }
+            ],
+            [
+                31,
+                {
+                    "name": "白石優介",
+                    "pronouns": "しらいしゆうすけ"
+                }
+            ],
+            [
+                32,
+                {
+                    "name": "三浦結衣",
+                    "pronouns": "みうらゆい"
+                }
+            ],
+            [
+                33,
+                {
+                    "name": "近藤健一",
+                    "pronouns": "こんどうけんいち"
+                }
+            ],
+            [
+                34,
+                {
+                    "name": "市川彩花",
+                    "pronouns": "いちかわあやか"
+                }
+            ],
+            [
+                35,
+                {
+                    "name": "原田智樹",
+                    "pronouns": "はらだともき"
+                }
+            ],
+            [
+                36,
+                {
+                    "name": "坂本美優",
+                    "pronouns": "さかもとみゆう"
+                }
+            ],
+            [
+                37,
+                {
+                    "name": "杉山雄介",
+                    "pronouns": "すぎやまゆうすけ"
+                }
+            ],
+            [
+                38,
+                {
+                    "name": "前田明日香",
+                    "pronouns": "まえだあすか"
+                }
+            ],
+            [
+                39,
+                {
+                    "name": "森本大輔",
+                    "pronouns": "もりもとだいすけ"
+                }
+            ],
+            [
+                40,
+                {
+                    "name": "内田麻衣",
+                    "pronouns": "うちだまい"
+                }
+            ],
+            [
+                41,
+                {
+                    "name": "青木龍也",
+                    "pronouns": "あおきたつや"
+                }
+            ],
+            [
+                42,
+                {
+                    "name": "宮崎春菜",
+                    "pronouns": "みやざきはるな"
+                }
+            ],
+            [
+                43,
+                {
+                    "name": "横山裕太",
+                    "pronouns": "よこやまゆうた"
+                }
+            ],
+            [
+                44,
+                {
+                    "name": "本田理沙",
+                    "pronouns": "ほんだりさ"
+                }
             ]
         ]));
         setNext(12);
@@ -190,7 +363,39 @@ export default function HomePage() {
             ["2-3", 9],
             ["2-4", 10],
             ["2-5", 11],
-            ["2-6", 12]
+            ["2-6", 12],
+            ["3-1", 13],
+            ["3-2", 14],
+            ["3-3", 15],
+            ["3-4", 16],
+            ["3-5", 17],
+            ["3-6", 18],
+            ["4-1", 19],
+            ["4-2", 20],
+            ["4-3", 21],
+            ["4-4", 22],
+            ["4-5", 23],
+            ["4-6", 24],
+            ["5-1", 25],
+            ["5-2", 26],
+            ["5-3", 27],
+            ["5-4", 28],
+            ["5-5", 29],
+            ["5-6", 30],
+            ["6-1", 31],
+            ["6-2", 32],
+            ["6-3", 33],
+            ["6-4", 34],
+            ["6-5", 35],
+            ["6-6", 36],
+            ["7-1", 37],
+            ["7-2", 38],
+            ["7-3", 39],
+            ["7-4", 40],
+            ["7-5", 41],
+            ["7-6", 42],
+            ["8-3", 43],
+            ["8-4", 44]
         ]));
         setDisabledSeats(new Map([
             ["8-1", true],
@@ -206,10 +411,11 @@ export default function HomePage() {
     const columnsSpacer = !seatColumnsSpacer ? column : seatColumnsSpacer;
 
     return (
-        <Box display="flex" flexDirection="column" sx={{ "minHeight": "100vh" }}>
+        <Box className="container" display="flex" flexDirection="column" sx={{ "minHeight": "100vh" }}>
 
             {/* Header */}
             <Sheet
+                className="header"
                 component="header"
                 sx={{
                     "width": "100%",
@@ -228,16 +434,16 @@ export default function HomePage() {
             </Sheet>
 
             {/* Main */}
-            <Box display="flex" sx={{ "flex": "1", "p": 2, "gap": 2 }}>
+            <Box className="main" display="flex" sx={{ "flex": "1", "p": 2, "gap": 2 }}>
 
                 {/* Sidebar */}
-                <Box display="flex" flexDirection="column" sx={{ "gap": 2 }}>
+                <Box className="sidebar" display="flex" flexDirection="column" sx={{ "gap": 2 }}>
 
                     {/* members list */}
-                    <Card sx={{ "flex": "1" }}>
+                    <Card className="members-list-container" sx={{ "flex": "1" }}>
 
                         {/* next person */}
-                        <Card>
+                        <Card className="next-person">
                             <CardContent>
                                 <Box display="flex" sx={{ "gap": 2, "alignItems": "center" }}>
                                     <Avatar size="lg">
@@ -261,10 +467,10 @@ export default function HomePage() {
                             </CardContent>
                             <CardActions>
                                 <ButtonGroup variant="soft" >
-                                    <IconButton onClick={() => {setNext(next ? next - 1 : null);}} disabled={!next || next <= 1}>
+                                    <IconButton onClick={() => { setNext(next ? next - 1 : null); }} disabled={!next || next <= 1}>
                                         <KeyboardArrowLeft />
                                     </IconButton>
-                                    <IconButton onClick={() => {setNext(next ? next + 1 : null);}} disabled={!next || next >= (members ? members.size : 0)}>
+                                    <IconButton onClick={() => { setNext(next ? next + 1 : null); }} disabled={!next || next >= (members ? members.size : 0)}>
                                         <KeyboardArrowRight />
                                     </IconButton>
                                 </ButtonGroup>
@@ -274,7 +480,7 @@ export default function HomePage() {
                         </Card>
 
                         {/* members list */}
-                        <List sx={{ "height": "0px", "overflowY": "scroll", "flexGrow": 1 }}>
+                        <List className="members-list" sx={{ "height": "0px", "overflowY": "scroll", "flexGrow": 1 }}>
                             <Skeleton loading={!members} animation="wave">
                                 {Array.from(members || []).map(([id, member]) => (
                                     <ListItem key={id} sx={{ "justifyContent": "space-between" }}>
@@ -285,7 +491,7 @@ export default function HomePage() {
                                                 <Typography level="title-lg">{member.name}</Typography>
                                             </Box>
                                         </Box>
-                                        <Button variant="outlined" onClick={() => {setNext(id);}} disabled={next === id}>
+                                        <Button variant="outlined" onClick={() => { setNext(id); }} disabled={next === id}>
                                             選択
                                         </Button>
                                     </ListItem>
@@ -295,7 +501,7 @@ export default function HomePage() {
                     </Card>
 
                     {/* settings */}
-                    <Card>
+                    <Card className="lottery-settings">
                         <Typography component="label" startDecorator={<AnimeSwitch checked={autoLottery} onChange={() => setAutoLottery(!autoLottery)} />}>
                             自動抽選
                         </Typography>
@@ -306,31 +512,31 @@ export default function HomePage() {
                 </Box>
 
                 {/* Seats */}
-                <Box display="flex" flexDirection="column" sx={{ "flex": "1", "gap": 2 }}>
+                <Box className="seats-container" display="flex" flexDirection="column" sx={{ "flex": "1", "gap": 2 }}>
 
                     {/* Seat Grid */}
-                    <Card variant="outlined" sx={{ 
-                        "flex": 1, 
+                    <Card className="seats" variant="outlined" sx={{
+                        "flex": 1,
                         "display": "flex",
                         "p": 2,
                         "overflow": "hidden"
                     }}>
                         {viewFrontTable && (
-                            <Card sx={{ "width": "50%", "margin": "0 auto" }} variant="soft">
+                            <Card className="seat front-table" sx={{ "width": "50%", "margin": "0 auto" }} variant="soft">
                                 <CardContent>
-                                    <Typography textAlign="center">
+                                    <Typography className="seat-name" textAlign="center">
                                         教卓
                                     </Typography>
                                 </CardContent>
                             </Card>
                         )}
                         <Skeleton loading={!seatRows || !seatColumns} animation="wave" sx={{ "flex": 1, "margin": -2 }}>
-                            <Box display="flex" flexDirection="column" sx={{ "gap": 2, "flex": 1 }}>
-                                {Array.from({ "length": row + row/rowsSpacer - 1}).map((_, rowIndex) => (
-                                    <Box key={rowIndex} display="flex" flexDirection="row" sx={{ "gap": 2, "flexGrow": rowIndex % (rowsSpacer + 1) === rowsSpacer ? 0 : 1 }}>
-                                        {Array.from({ "length": column + column/columnsSpacer - 1 }).map((_, colIndex) => (
+                            <Box className="seats-row-container" display="flex" flexDirection="column" sx={{ "gap": 2, "flex": 1 }}>
+                                {Array.from({ "length": row + row / rowsSpacer - 1 }).map((_, rowIndex) => (
+                                    <Box className="seats-column-container" key={rowIndex} display="flex" flexDirection="row" sx={{ "gap": 2, "flexGrow": rowIndex % (rowsSpacer + 1) === rowsSpacer ? 0 : 1 }}>
+                                        {Array.from({ "length": column + column / columnsSpacer - 1 }).map((_, colIndex) => (
                                             (rowIndex % (rowsSpacer + 1) === rowsSpacer || colIndex % (columnsSpacer + 1) === columnsSpacer) ? (
-                                                <Box key={`${rowIndex}-${colIndex}`}  sx={{"minWidth": "1rem", "minHeight": "1rem"}} />
+                                                <Box className="seat-spacer" key={`${rowIndex}-${colIndex}`} sx={{ "minWidth": "1rem", "minHeight": "1rem" }} />
                                             ) : ((() => {
                                                 let realRow = 0;
                                                 let realCol = 0;
@@ -344,12 +550,39 @@ export default function HomePage() {
                                                 }
 
                                                 return (
-                                                    <Card key={`${rowIndex}-${colIndex}`} sx={{ "flex": 1, "height": "100%", "opacity": disabledSeats?.get(`${realRow}-${realCol}`) ? 0.25 : 1, "transition": "background 0.2s" }} id={`seat-${realRow}-${realCol}`} variant="soft" color={frontSelect && seatFrontThreshold && realRow <= seatFrontThreshold ? "primary" : "neutral"}>
+                                                    <Card
+                                                        className={`seat ${disabledSeats?.get(`${realRow}-${realCol}`) ? "disabled" : ""}`}
+                                                        key={`${rowIndex}-${colIndex}`}
+                                                        sx={{ "flex": 1, "height": "100%", "opacity": disabledSeats?.get(`${realRow}-${realCol}`) ? 0.25 : 1, "transition": "background 0.2s, opacity 0.2s", "userSelect": "none" }}
+                                                        id={`seat-${realRow}-${realCol}`}
+                                                        variant="soft"
+                                                        color={frontSelect && seatFrontThreshold && realRow <= seatFrontThreshold ? "primary" : "neutral"}
+                                                        onClick={() => {
+                                                            if (disabledSeats?.has(`${realRow}-${realCol}`) && disabledSeats.get(`${realRow}-${realCol}`)) {
+                                                                setDisabledSeats(new Map(disabledSeats).set(`${realRow}-${realCol}`, false));
+                                                            } else {
+                                                                setDisabledSeats(new Map(disabledSeats).set(`${realRow}-${realCol}`, true));
+                                                            }
+                                                        }}>
                                                         <CardContent sx={{ "display": "flex", "justifyContent": "center", "alignItems": "center" }}>
-                                                            <Typography level="h1">
+                                                            <Typography level="h1" className="seat-number">
                                                                 {(() => {
                                                                     const seatNumber = seats?.get(`${realRow}-${realCol}`);
-                                                                    return seatNumber ? seatNumber : (<>&nbsp;</>);
+                                                                    return seatNumber ? seatNumber : null;
+                                                                })()}
+                                                            </Typography>
+                                                            <Typography level="body-lg" sx={{ "textAlign": "center", "display": "none" }} className="seat-name">
+                                                                {(() => {
+                                                                    const seatMember = members?.get(seats?.get(`${realRow}-${realCol}`) || 0);
+                                                                    return seatMember ? (
+                                                                        <>
+                                                                            <Typography className="seat-name-pronouns" component="span" level="body-sm">
+                                                                                {seatMember.pronouns}
+                                                                            </Typography>
+                                                                            <br />
+                                                                            {seatMember.name}
+                                                                        </>
+                                                                    ) : null;
                                                                 })()}
                                                             </Typography>
                                                         </CardContent>
@@ -363,7 +596,6 @@ export default function HomePage() {
                             </Box>
                         </Skeleton>
                     </Card>
-
                 </Box>
 
             </Box>

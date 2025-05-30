@@ -1,0 +1,75 @@
+@media print {
+    .header,
+    .sidebar {
+        display: none;
+    }
+
+    .container,
+    .main,
+    .seats {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border-radius: none;
+        border: none;
+        background: none;
+        overflow: unset;
+    }
+
+    .seats {
+        padding: 2px;
+        gap: 0.5rem;
+    }
+
+    .seats-container {
+        gap: 0;
+    }
+
+    .seats-row-container,
+    .seats-column-container {
+        gap: 0;
+    }
+
+    .seat-spacer {
+        min-width: 0.5rem;
+        min-height: 0.5rem;
+    }
+
+    .seat {
+        background-color: #fff;
+        padding: 0;
+        color: #000;
+        outline: 1px solid #000;
+        border-radius: 0;
+    }
+
+    .seat.disabled {
+        opacity: 0;
+    }
+
+    .seat-number {
+        font-size: 1rem;
+        color: #000;
+    }
+
+    .seat-name {
+        display: block;
+        color: #000;
+    }
+
+    .seat-name-pronouns {
+        color: #000;
+    }
+
+    .maker {
+        display: block;
+        color: #888;
+        font-size: 0.5rem;
+
+    }
+
+    .maker a {
+        color: #888;
+        text-decoration: none;
+    }
+}
