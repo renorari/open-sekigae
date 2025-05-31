@@ -1,6 +1,6 @@
 # ![Open Sékigae ロゴ](/public/images/logo.svg)
 
-![Open Sékigaeのスクリーンショット](/public/images/screenshot.png)
+![Open SékigaeのOGP](/public/images/ogp.png)
 
 Open Sékigaeは、教室やイベント会場での座席配置を簡単に決めることができるオープンソースの席替えツールです。
 
