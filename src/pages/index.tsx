@@ -5,7 +5,8 @@ import "../styles/main.css";
 import React, { useEffect, useState } from "react";
 
 import {
-    KeyboardArrowLeft, KeyboardArrowRight, PersonRounded, SettingsRounded
+    DataArrayRounded, IosShareRounded, KeyboardArrowLeft, KeyboardArrowRight, PersonRounded,
+    PrintRounded, SettingsRounded
 } from "@mui/icons-material";
 import {
     Avatar, Badge, Box, Button, ButtonGroup, Card, CardActions, CardContent, FormControl, FormLabel,
@@ -44,6 +45,7 @@ export default function HomePage() {
     const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
     const [membersModalOpen, setMembersModalOpen] = useState<boolean>(false);
     const [membersInput, setMembersInput] = useState<string>("");
+    const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
     const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
     const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
@@ -215,6 +217,9 @@ export default function HomePage() {
                             <PersonRounded color="primary" />
                         </IconButton>
                     </Badge>
+                    <IconButton style={{ "borderRadius": "100vw" }} aria-label="Export" onClick={() => setExportModalOpen(true)}>
+                        <IosShareRounded color="primary" />
+                    </IconButton>
                     <IconButton style={{ "borderRadius": "100vw" }} aria-label="Settings" onClick={() => setSettingsModalOpen(true)}>
                         <SettingsRounded color="primary" />
                     </IconButton>
@@ -481,7 +486,7 @@ export default function HomePage() {
             </Box>
 
             {/* Members Modal */}
-            <Modal open={membersModalOpen} onClose={() => setMembersModalOpen(false)}>
+            <Modal open={membersModalOpen} onClose={() => setMembersModalOpen(false)} className="modal">
                 <ModalDialog>
                     <ModalClose />
                     <Typography level="title-lg">
@@ -533,7 +538,7 @@ export default function HomePage() {
             </Modal>
 
             {/* Settings Modal */}
-            <Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
+            <Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)} className="modal">
                 <ModalDialog>
                     <ModalClose />
                     <Typography level="title-lg">
@@ -692,6 +697,60 @@ export default function HomePage() {
                     <Button variant="solid" onClick={() => setSettingsModalOpen(false)}>
                         閉じる
                     </Button>
+                </ModalDialog>
+            </Modal>
+
+            {/* Export Modal */}
+            <Modal open={exportModalOpen} onClose={() => setExportModalOpen(false)} className="modal">
+                <ModalDialog>
+                    <ModalClose />
+                    <Typography level="title-lg">
+                        座席のエクスポート
+                    </Typography>
+
+                    <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
+                        <Button
+                            onClick={() => {
+                                setExportModalOpen(false);
+                                const csvContent = [];
+                                csvContent.push("教卓,,,,,");
+                                for (let r = 1; r <= row; r++) {
+                                    const rowData = [];
+                                    for (let c = 1; c <= column; c++) {
+                                        const seatNumber = `${r}-${c}`;
+                                        const memberId = seats?.get(seatNumber);
+                                        rowData.push(memberId ? memberId : "");
+                                    }
+                                    csvContent.push(rowData.join(","));
+                                }
+                                const csvBlob = new Blob([csvContent.join("\n")], { "type": "text/csv" });
+                                const csvUrl = URL.createObjectURL(csvBlob);
+                                const link = document.createElement("a");
+                                link.href = csvUrl;
+                                link.download = "seats.csv";
+                                link.click();
+                                URL.revokeObjectURL(csvUrl);
+                                setSnackbarMessage("CSV形式でエクスポートしました。");
+                                setSnackbarOpen(true);
+                            }}
+                            sx={{ "flex": 1, "flexDirection": "column" }}
+                            variant="soft"
+                        >
+                            <DataArrayRounded sx={{"fontSize": "2rem"}} />
+                            CSV形式
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setExportModalOpen(false);
+                                window.print();
+                            }}
+                            sx={{ "flex": 1, "flexDirection": "column" }}
+                            variant="soft"
+                        >
+                            <PrintRounded sx={{"fontSize": "2rem"}} />
+                            印刷形式
+                        </Button>
+                    </Box>
                 </ModalDialog>
             </Modal>
 

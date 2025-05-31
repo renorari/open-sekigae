@@ -1,6 +1,7 @@
 @media print {
     .header,
-    .sidebar {
+    .sidebar,
+    .modal {
         display: none;
     }
 
