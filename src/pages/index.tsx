@@ -534,6 +534,18 @@ export default function HomePage() {
 
                     <Box display="flex" flexDirection="column" sx={{ "gap": 2, "overflowY": "auto" }}>
                         <Typography level="title-md" sx={{ "mb": -2 }}>
+                            一般設定
+                        </Typography>
+                        <Box>
+                            <Typography component="label" startDecorator={<AnimeSwitch checked={viewFrontTable} onChange={() => setViewFrontTable(!viewFrontTable)} />}>
+                                教卓を表示
+                            </Typography>
+                            <Typography component="label" startDecorator={<AnimeSwitch checked={audioEnabled} onChange={() => setAudioEnabled(!audioEnabled)} />}>
+                                音声を有効にする
+                            </Typography>
+                        </Box>
+
+                        <Typography level="title-md" sx={{ "mb": -2 }}>
                             座席の設定
                         </Typography>
 
