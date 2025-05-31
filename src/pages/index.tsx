@@ -198,7 +198,7 @@ export default function HomePage() {
         <>
             <Metadata />
 
-            <Box className="container" display="flex" flexDirection="column" sx={{ "minHeight": "100vh" }}>
+            <Box className="container" display="flex" flexDirection="column" sx={{ "height": "100%", "flex": "1" }}>
 
                 {/* Header */}
                 <Sheet
@@ -231,13 +231,13 @@ export default function HomePage() {
                 </Sheet>
 
                 {/* Main */}
-                <Box className="main" display="flex" sx={{ "flex": "1", "p": 2, "gap": 2 }}>
+                <Box className="main" display="flex" sx={{ "flex": "1", "p": 2, "gap": 2, "height": "100%", "alignItems": "stretch" }}>
 
                     {/* Sidebar */}
                     <Box className="sidebar" display="flex" flexDirection="column" sx={{ "gap": 2 }}>
 
                         {/* members list */}
-                        <Card className="members-list-container" sx={{ "flex": "1" }}>
+                        <Card className="members-list-container" sx={{ "height": "100%" }}>
 
                             {/* next person */}
                             <Card className="next-person">
@@ -366,8 +366,8 @@ export default function HomePage() {
                             </Card>
 
                             {/* members list */}
-                            <List className="members-list" sx={{ "height": "0px", "overflowY": "scroll", "flex": 1 }}>
-                                <Skeleton loading={!members} animation="wave">
+                            <List className="members-list" sx={{ "height": 0, "overflowY": "auto" }}>
+                                <Skeleton loading={!members} animation="wave" sx={{ "width": "100%", "height": "100%" }}>
                                     {Array.from(members || []).map(([id, member]) => (
                                         <ListItem key={id} sx={{ "justifyContent": "space-between" }}>
                                             <Box display="flex" sx={{ "gap": 2, "alignItems": "center" }}>
@@ -389,7 +389,7 @@ export default function HomePage() {
                         </Card>
 
                         {/* settings */}
-                        <Card className="lottery-settings">
+                        <Card className="lottery-settings" sx={{ "flexShrink": "1" }}>
                             <Typography component="label" startDecorator={<AnimeSwitch checked={autoLottery} onChange={() => setAutoLottery(!autoLottery)} />}>
                                 自動抽選
                             </Typography>
