@@ -34,7 +34,14 @@ export default function HomePage() {
     const [autoLotteryInterval, setAutoLotteryInterval] = useState<number>(1000);
     const [animationSteps, setAnimationSteps] = useState<number>(10);
 
+    const [rollAudio, setRollAudio] = useState<HTMLAudioElement | null>(null);
+    const [rollCloseAudio, setRollCloseAudio] = useState<HTMLAudioElement | null>(null);
+
     useEffect(() => {
+        // 音声のロード
+        setRollAudio(new Audio("/sounds/roll.mp3"));
+        setRollCloseAudio(new Audio("/sounds/roll-close.mp3"));
+
         // 仮データ
         setMembers(new Map([
             [
@@ -463,6 +470,7 @@ export default function HomePage() {
         const originalSeats = new Map(seats);
         
         // 抽選アニメーション
+        rollAudio?.play().catch(() => {});
         let animationStep = 0;
         const animateStep = () => {
             if (animationStep < animationSteps) {
@@ -473,6 +481,10 @@ export default function HomePage() {
                 setTimeout(animateStep, 100);
             } else {
                 // アニメーション完了後、最終的な座席を設定
+                rollAudio?.pause();
+                if (rollAudio) rollAudio.currentTime = 0;
+                if (rollCloseAudio) rollCloseAudio.currentTime = 0;
+                rollCloseAudio?.play().catch(() => {});
                 setSeats(new Map(originalSeats).set(selectedSeat, number));
                 if (next !== members?.size) {
                     setNext(next + 1);
