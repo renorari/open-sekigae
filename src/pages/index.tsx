@@ -32,6 +32,7 @@ export default function HomePage() {
     const [autoLottery, setAutoLottery] = useState<boolean>(false);
     const [frontSelect, setFrontSelect] = useState<boolean>(false);
     const [autoLotteryInterval, setAutoLotteryInterval] = useState<number>(1000);
+    const [animationSteps, setAnimationSteps] = useState<number>(10);
 
     useEffect(() => {
         // 仮データ
@@ -435,35 +436,53 @@ export default function HomePage() {
 
         const timer = setTimeout(() => {
             lottery(next);
-            if (next !== members.size) {
-                setNext(next + 1);
-            } else {
-                setNext(1);
-            }
         }, autoLotteryInterval);
 
         return () => clearTimeout(timer);
     }, [autoLottery, next, members, seats, autoLotteryInterval]);
 
     function lottery(number: number) {
-        setSeats((seats) => {
-            if (!seats) return null;
-            
-            const availableSeats = allSeats.filter(seat => !seats.has(seat) && !disabledSeats?.get(seat));
-            if (availableSeats.length === 0) {
-                alert("空いている席がありません。");
-                setAutoLottery(false); // 自動抽選を停止
-                return seats;
-            }
+        if (!seats || !next) return;
+        
+        const availableSeats = allSeats.filter(seat => !seats.has(seat) && !disabledSeats?.get(seat));
+        if (availableSeats.length === 0) {
+            alert("空いている席がありません。");
+            setAutoLottery(false);
+            return;
+        }
 
-            const assignedMembers = Array.from(seats.values());
-            if (assignedMembers.includes(number)) {
-                return seats; // アラートは出さずに自動で次に進む
-            }
+        const assignedMembers = Array.from(seats.values());
+        if (assignedMembers.includes(number)) {
+            return;
+        }
 
-            const selectedSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
-            return new Map(seats).set(selectedSeat, number);
-        });
+        // 最終的に選ばれる座席を先に決定
+        const selectedSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
+        
+        // アニメーション用の座席状態を保存
+        const originalSeats = new Map(seats);
+        
+        // 抽選アニメーション
+        let animationStep = 0;
+        const animateStep = () => {
+            if (animationStep < animationSteps) {
+                // アニメーション中はランダムな座席を表示
+                const randomSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
+                setSeats(new Map(originalSeats).set(randomSeat, number));
+                animationStep++;
+                setTimeout(animateStep, 100);
+            } else {
+                // アニメーション完了後、最終的な座席を設定
+                setSeats(new Map(originalSeats).set(selectedSeat, number));
+                if (next !== members?.size) {
+                    setNext(next + 1);
+                } else {
+                    setNext(1);
+                }
+            }
+        };
+        
+        animateStep();
     }
 
     return (
@@ -533,13 +552,7 @@ export default function HomePage() {
                                 <Button variant="outlined">手動設定</Button>
                                 <Button endDecorator={<KeyboardArrowRight />} disabled={!next || !!seats?.values().find(seat => seat === next) || autoLottery} onClick={() => {
                                     if (!next) return;
-                                    
                                     lottery(next);
-                                    if (next !== members?.size) {
-                                        setNext(next + 1);
-                                    } else {
-                                        setNext(1);
-                                    }
                                 }}>{autoLottery ? "抽選中…" : "抽選開始"}</Button>
                             </CardActions>
                         </Card>
