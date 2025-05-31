@@ -33,6 +33,7 @@ export default function HomePage() {
 
     const [autoLottery, setAutoLottery] = useState<boolean>(false);
     const [frontSelect, setFrontSelect] = useState<boolean>(false);
+    const [turn, setTurn] = useState<boolean>(false);
     const [viewFrontTable, setViewFrontTable] = useState<boolean>(true);
     const [autoLotteryInterval, setAutoLotteryInterval] = useState<number>(1000);
     const [animationSteps, setAnimationSteps] = useState<number>(10);
@@ -65,6 +66,7 @@ export default function HomePage() {
         setDisabledSeats(new Map(parsedSettings.disabledSeats || []));
         setSeats(new Map(parsedSettings.seats || []));
         setMembers(new Map(parsedSettings.members || []));
+        setTurn(parsedSettings.turn || false);
         setViewFrontTable(parsedSettings.viewFrontTable || true);
         setAutoLotteryInterval(parsedSettings.autoLotteryInterval || 1000);
         setAnimationSteps(parsedSettings.animationSteps || 10);
@@ -83,6 +85,7 @@ export default function HomePage() {
             "disabledSeats": Array.from(disabledSeats || []),
             "seats": Array.from(seats || []),
             "members": Array.from(members || []),
+            turn,
             viewFrontTable,
             autoLotteryInterval,
             animationSteps,
@@ -96,7 +99,11 @@ export default function HomePage() {
 
         // 次の人の設定
         setNext(!members || members.size === 0 ? null : (next ? next : 1));
-    }, [seatRows, seatColumns, seatRowsSpacer, seatColumnsSpacer, seatFrontThreshold, disabledSeats, seats, next, members, autoLottery, frontSelect, viewFrontTable, autoLotteryInterval, animationSteps]);
+    }, [
+        seatRows, seatColumns, seatRowsSpacer, seatColumnsSpacer, seatFrontThreshold,
+        disabledSeats, seats, members, turn, viewFrontTable,
+        autoLotteryInterval, animationSteps, animationTime, audioEnabled
+    ]);
 
     const row = seatRows || 0;
     const column = seatColumns || 0;
@@ -390,6 +397,7 @@ export default function HomePage() {
                     <Card className="seats" variant="outlined" sx={{
                         "flex": 1,
                         "display": "flex",
+                        "flexDirection": !turn ? "column" : "column-reverse",
                         "p": 2,
                         "overflow": "hidden"
                     }}>
@@ -403,9 +411,9 @@ export default function HomePage() {
                             </Card>
                         )}
                         <Skeleton loading={!seatRows || !seatColumns} animation="wave" sx={{ "flex": 1, "margin": -2 }}>
-                            <Box className="seats-row-container" display="flex" flexDirection="column" sx={{ "gap": 2, "flex": 1 }}>
+                            <Box className="seats-row-container" display="flex" flexDirection={!turn ? "column" : "column-reverse"} sx={{ "gap": 2, "flex": 1 }}>
                                 {Array.from({ "length": row + row / rowsSpacer - 1 }).map((_, rowIndex) => (
-                                    <Box className="seats-column-container" key={rowIndex} display="flex" flexDirection="row" sx={{ "gap": 2, "flex": rowIndex % (rowsSpacer + 1) === rowsSpacer ? 0 : 1 }}>
+                                    <Box className="seats-column-container" key={rowIndex} display="flex" flexDirection={!turn ? "row" : "row-reverse"} sx={{ "gap": 2, "flex": rowIndex % (rowsSpacer + 1) === rowsSpacer ? 0 : 1 }}>
                                         {Array.from({ "length": column + column / columnsSpacer - 1 }).map((_, colIndex) => (
                                             (rowIndex % (rowsSpacer + 1) === rowsSpacer || colIndex % (columnsSpacer + 1) === columnsSpacer) ? (
                                                 <Box className="seat-spacer" key={`${rowIndex}-${colIndex}`} sx={{ "minWidth": "1rem", "minHeight": "1rem" }} />
@@ -537,6 +545,9 @@ export default function HomePage() {
                             一般設定
                         </Typography>
                         <Box>
+                            <Typography component="label" startDecorator={<AnimeSwitch checked={turn} onChange={() => setTurn(!turn)} />}>
+                                座席を反転表示
+                            </Typography>
                             <Typography component="label" startDecorator={<AnimeSwitch checked={viewFrontTable} onChange={() => setViewFrontTable(!viewFrontTable)} />}>
                                 教卓を表示
                             </Typography>
