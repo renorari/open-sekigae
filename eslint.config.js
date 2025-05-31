@@ -3,7 +3,6 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 import pluginJs from "@eslint/js";
-import stylisticTs from "@stylistic/eslint-plugin-ts";
 
 import pluginRenorari from "./eslint/index.js";
 
@@ -21,7 +20,6 @@ export default [
             }
         },
         "plugins": {
-            "@stylistic/ts": stylisticTs,
             "@renorari": pluginRenorari
         },
         "rules": {
@@ -35,10 +33,10 @@ export default [
                     "varsIgnorePattern": "^_"
                 }
             ],
-            "@stylistic/ts/indent": ["error", 4],
-            "@stylistic/ts/quotes": ["error", "double"],
-            "@stylistic/ts/semi": ["error", "always"],
-            "@stylistic/ts/comma-dangle": ["error", "never"],
+            "@/indent": ["error", 4],
+            "@/quotes": ["error", "double"],
+            "@/semi": ["error", "always"],
+            "@/comma-dangle": ["error", "never"],
             "@renorari/no-unquoted-keys": "error"
         }
     }
