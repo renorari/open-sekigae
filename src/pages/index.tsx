@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { KeyboardArrowLeft, KeyboardArrowRight, SettingsRounded } from "@mui/icons-material";
 import {
     Avatar, Box, Button, ButtonGroup, Card, CardActions, CardContent, IconButton, List, ListItem,
-    Sheet, Skeleton, Typography
+    Modal, ModalClose, ModalDialog, Sheet, Skeleton, Typography
 } from "@mui/joy";
 
 import AnimeSwitch from "../components/AnimeSwitch";
@@ -33,6 +33,7 @@ export default function HomePage() {
     const [frontSelect, setFrontSelect] = useState<boolean>(false);
     const [autoLotteryInterval, setAutoLotteryInterval] = useState<number>(1000);
     const [animationSteps, setAnimationSteps] = useState<number>(10);
+    const [seatSettingModalOpen, setSeatSettingModalOpen] = useState<boolean>(false);
 
     const [rollAudio, setRollAudio] = useState<HTMLAudioElement | null>(null);
     const [rollCloseAudio, setRollCloseAudio] = useState<HTMLAudioElement | null>(null);
@@ -450,7 +451,7 @@ export default function HomePage() {
 
     function lottery(number: number) {
         if (!seats || !next) return;
-        
+
         const availableSeats = allSeats.filter(seat => !seats.has(seat) && !disabledSeats?.get(seat));
         if (availableSeats.length === 0) {
             alert("空いている席がありません。");
@@ -465,12 +466,12 @@ export default function HomePage() {
 
         // 最終的に選ばれる座席を先に決定
         const selectedSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
-        
+
         // アニメーション用の座席状態を保存
         const originalSeats = new Map(seats);
-        
+
         // 抽選アニメーション
-        rollAudio?.play().catch(() => {});
+        rollAudio?.play().catch(() => { });
         let animationStep = 0;
         const animateStep = () => {
             if (animationStep < animationSteps) {
@@ -484,7 +485,7 @@ export default function HomePage() {
                 rollAudio?.pause();
                 if (rollAudio) rollAudio.currentTime = 0;
                 if (rollCloseAudio) rollCloseAudio.currentTime = 0;
-                rollCloseAudio?.play().catch(() => {});
+                rollCloseAudio?.play().catch(() => { });
                 setSeats(new Map(originalSeats).set(selectedSeat, number));
                 if (next !== members?.size) {
                     setNext(next + 1);
@@ -493,7 +494,7 @@ export default function HomePage() {
                 }
             }
         };
-        
+
         animateStep();
     }
 
@@ -561,12 +562,98 @@ export default function HomePage() {
                                         <KeyboardArrowRight />
                                     </IconButton>
                                 </ButtonGroup>
-                                <Button variant="outlined">手動設定</Button>
+                                <Button variant="outlined" onClick={() => setSeatSettingModalOpen(true)} disabled={!next}>手動設定</Button>
                                 <Button endDecorator={<KeyboardArrowRight />} disabled={!next || !!seats?.values().find(seat => seat === next) || autoLottery} onClick={() => {
                                     if (!next) return;
                                     lottery(next);
                                 }}>{autoLottery ? "抽選中…" : "抽選開始"}</Button>
                             </CardActions>
+
+                            <Modal open={seatSettingModalOpen} onClose={() => setSeatSettingModalOpen(false)}>
+                                <ModalDialog>
+                                    <ModalClose />
+                                    <Box display="flex" sx={{ "gap": 2, "alignItems": "center" }}>
+                                        <Avatar size="lg">
+                                            {next}
+                                        </Avatar>
+                                        <Box display="flex" flexDirection="column" sx={{ "flexGrow": 1 }}>
+                                            <Typography>
+                                                {members?.get(next || 0)?.pronouns}
+                                            </Typography>
+                                            <Typography level="h2">
+                                                {members?.get(next || 0)?.name}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Box display="grid" sx={{ "gridTemplateColumns": `repeat(${column}, 1fr)`, "gap": 2 }}>
+                                        {Array.from({ "length": row * column }).map((_, index) => {
+                                            const seatNumber = `${Math.floor(index / column) + 1}-${(index % column) + 1}`;
+                                            return (
+                                                <Button
+                                                    key={seatNumber}
+                                                    variant="outlined"
+                                                    disabled={!!disabledSeats?.get(seatNumber) || !!seats?.has(seatNumber)}
+                                                    onClick={() => {
+                                                        if (!next || !members) return;
+                                                        const newSeats = new Map(seats);
+
+                                                        if (Array.from(newSeats.values()).includes(next)) {
+                                                            // 既に選択されている場合は削除
+                                                            newSeats.forEach((value, key) => {
+                                                                if (value === next) {
+                                                                    newSeats.delete(key);
+                                                                }
+                                                            });
+                                                        }
+
+                                                        if (newSeats.has(seatNumber)) {
+                                                            newSeats.delete(seatNumber);
+                                                        } else {
+                                                            newSeats.set(seatNumber, next);
+                                                        }
+
+                                                        setSeats(newSeats);
+                                                    }}>
+                                                    {seatNumber}
+                                                </Button>
+                                            );
+                                        })}
+                                    </Box>
+
+                                    <Box
+                                        sx={{
+                                            "mt": 1,
+                                            "display": "flex",
+                                            "gap": 1,
+                                            "flexDirection": { "xs": "column", "sm": "row-reverse" }
+                                        }}
+                                    >
+                                        <Button variant="solid" color="primary" onClick={() => setSeatSettingModalOpen(false)}>
+                                            決定
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            color="danger"
+                                            disabled={!Array.from(seats?.values() || []).includes(next || 0)}
+                                            onClick={() => {
+                                                if (!next || !seats) return;
+
+                                                const newSeats = new Map(seats);
+                                                newSeats.forEach((value, key) => {
+                                                    if (value === next) {
+                                                        newSeats.delete(key);
+                                                    }
+                                                });
+                                                setSeats(newSeats);
+
+                                                setSeatSettingModalOpen(false);
+                                            }}>
+                                            削除
+                                        </Button>
+                                    </Box>
+                                </ModalDialog>
+                            </Modal>
                         </Card>
 
                         {/* members list */}
