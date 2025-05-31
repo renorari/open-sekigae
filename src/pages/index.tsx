@@ -2,7 +2,7 @@
 
 import "../styles/main.css";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { KeyboardArrowLeft, KeyboardArrowRight, SettingsRounded } from "@mui/icons-material";
 import {
@@ -409,6 +409,30 @@ export default function HomePage() {
     const column = seatColumns || 0;
     const rowsSpacer = !seatRowsSpacer ? row : seatRowsSpacer;
     const columnsSpacer = !seatColumnsSpacer ? column : seatColumnsSpacer;
+    const allSeats = Array.from({ "length": row * column }, (_, i) => {
+        return `${Math.floor(i / column) + 1}-${(i % column) + 1}`;
+    });
+
+    function lottery(number: number) {
+        setSeats((seats) => {
+            if (!seats) return null;
+            
+            const availableSeats = allSeats.filter(seat => !seats.has(seat) && !disabledSeats?.get(seat));
+            if (availableSeats.length === 0) {
+                alert("空いている席がありません。");
+                return seats;
+            }
+
+            const completeMembers = Array.from(seats.values());
+            if (completeMembers.includes(number)) {
+                alert("この人はすでに席が決まっています。");
+                return seats;
+            }
+
+            const selectedSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
+            return new Map(seats).set(selectedSeat, number);
+        });
+    }
 
     return (
         <Box className="container" display="flex" flexDirection="column" sx={{ "minHeight": "100vh" }}>
@@ -475,7 +499,16 @@ export default function HomePage() {
                                     </IconButton>
                                 </ButtonGroup>
                                 <Button variant="outlined">手動設定</Button>
-                                <Button endDecorator={<KeyboardArrowRight />} disabled={!next || !!seats?.values().find(seat => seat === next)}>抽選開始</Button>
+                                <Button endDecorator={<KeyboardArrowRight />} disabled={!next || !!seats?.values().find(seat => seat === next)} onClick={() => {
+                                    if (!next) return;
+                                    
+                                    lottery(next);
+                                    if (next !== members?.size) {
+                                        setNext(next + 1);
+                                    } else {
+                                        setNext(1);
+                                    }
+                                }}>抽選開始</Button>
                             </CardActions>
                         </Card>
 
@@ -485,7 +518,9 @@ export default function HomePage() {
                                 {Array.from(members || []).map(([id, member]) => (
                                     <ListItem key={id} sx={{ "justifyContent": "space-between" }}>
                                         <Box display="flex" sx={{ "gap": 2, "alignItems": "center" }}>
-                                            <Avatar size="sm">{id}</Avatar>
+                                            <Avatar size="sm" color={Array.from(seats?.values() || []).includes(id) ? "neutral" : "primary"}>
+                                                {id}
+                                            </Avatar>
                                             <Box display="flex" flexDirection="column">
                                                 <Typography>{member.pronouns}</Typography>
                                                 <Typography level="title-lg">{member.name}</Typography>
