@@ -4,10 +4,13 @@ import "../styles/main.css";
 
 import React, { useEffect, useState } from "react";
 
-import {
-    DataArrayRounded, IosShareRounded, KeyboardArrowLeft, KeyboardArrowRight, PersonRounded,
-    PrintRounded, SettingsRounded
-} from "@mui/icons-material";
+import DataArrayRounded from "@mui/icons-material/DataArrayRounded";
+import IosShareRounded from "@mui/icons-material/IosShareRounded";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import PersonRounded from "@mui/icons-material/PersonRounded";
+import PrintRounded from "@mui/icons-material/PrintRounded";
+import SettingsRounded from "@mui/icons-material/SettingsRounded";
 import {
     Avatar, Badge, Box, Button, ButtonGroup, Card, CardActions, CardContent, FormControl, FormLabel,
     IconButton, Input, List, ListItem, Modal, ModalClose, ModalDialog, Sheet, Skeleton, Snackbar,
