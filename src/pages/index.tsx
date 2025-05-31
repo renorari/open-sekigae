@@ -357,10 +357,10 @@ export default function HomePage() {
             ["1-2", 2],
             ["1-3", 3],
             ["1-4", 4],
-            ["1-5", 5],
-            ["1-6", 6],
-            ["2-1", 7],
-            ["2-2", 8],
+            // ["1-5", 5],
+            // ["1-6", 6],
+            // ["2-1", 7],
+            // ["2-2", 8],
             ["2-3", 9],
             ["2-4", 10],
             ["2-5", 11],
@@ -410,7 +410,7 @@ export default function HomePage() {
     const column = seatColumns || 0;
     const rowsSpacer = !seatRowsSpacer ? row : seatRowsSpacer;
     const columnsSpacer = !seatColumnsSpacer ? column : seatColumnsSpacer;
-    const allSeats = Array.from({ "length": row * column }, (_, i) => {
+    const allSeats = Array.from({ "length": !frontSelect ? row * column : (seatFrontThreshold || row) * column }, (_, i) => {
         return `${Math.floor(i / column) + 1}-${(i % column) + 1}`;
     });
 
