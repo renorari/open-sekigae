@@ -127,14 +127,6 @@ export default function HomePage() {
             return;
         }
 
-        // 現在の人がすでに席が決まっているかチェック
-        if (assignedMembers.includes(next)) {
-            // 次の人に進む
-            const nextMember = next < members.size ? next + 1 : 1;
-            setNext(nextMember);
-            return;
-        }
-
         const timer = setTimeout(() => {
             lottery(next);
         }, autoLotteryInterval);
@@ -143,7 +135,7 @@ export default function HomePage() {
     }, [autoLottery, next, members, seats, autoLotteryInterval]);
 
     function lottery(number: number) {
-        if (!seats || !next) return;
+        if (!seats || !next || !members) return;
 
         const availableSeats = allSeats.filter(seat => !seats.has(seat) && !disabledSeats?.get(seat));
         if (availableSeats.length === 0) {
@@ -154,7 +146,10 @@ export default function HomePage() {
         }
 
         const assignedMembers = Array.from(seats.values());
-        if (assignedMembers.includes(number)) {
+        if (assignedMembers.includes(next)) {
+            // 次の人に進む
+            const nextMember = next < members.size ? next + 1 : 1;
+            setNext(nextMember);
             return;
         }
 
