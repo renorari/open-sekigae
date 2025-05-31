@@ -60,16 +60,4 @@
     .seat-name-pronouns {
         color: #000;
     }
-
-    .maker {
-        display: block;
-        color: #888;
-        font-size: 0.5rem;
-
-    }
-
-    .maker a {
-        color: #888;
-        text-decoration: none;
-    }
 }
