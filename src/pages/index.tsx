@@ -4,10 +4,13 @@ import "../styles/main.css";
 
 import React, { useEffect, useState } from "react";
 
-import { KeyboardArrowLeft, KeyboardArrowRight, SettingsRounded } from "@mui/icons-material";
 import {
-    Avatar, Box, Button, ButtonGroup, Card, CardActions, CardContent, IconButton, List, ListItem,
-    Modal, ModalClose, ModalDialog, Sheet, Skeleton, Typography
+    KeyboardArrowLeft, KeyboardArrowRight, PersonRounded, SettingsRounded
+} from "@mui/icons-material";
+import {
+    Avatar, Badge, Box, Button, ButtonGroup, Card, CardActions, CardContent, FormControl, FormLabel,
+    IconButton, Input, List, ListItem, Modal, ModalClose, ModalDialog, Sheet, Skeleton, Snackbar,
+    Textarea, Typography
 } from "@mui/joy";
 
 import AnimeSwitch from "../components/AnimeSwitch";
@@ -23,7 +26,6 @@ export default function HomePage() {
     const [seatRowsSpacer, setSeatRowsSpacer] = useState<number | null>(null);
     const [seatColumnsSpacer, setSeatColumnsSpacer] = useState<number | null>(null);
     const [seatFrontThreshold, setSeatFrontThreshold] = useState<number | null>(null);
-    const [viewFrontTable, setViewFrontTable] = useState<boolean | null>(null);
     const [disabledSeats, setDisabledSeats] = useState<Map<string, boolean> | null>(null);
     const [seats, setSeats] = useState<Map<string, number> | null>(null);
     const [next, setNext] = useState<number | null>(null);
@@ -31,9 +33,18 @@ export default function HomePage() {
 
     const [autoLottery, setAutoLottery] = useState<boolean>(false);
     const [frontSelect, setFrontSelect] = useState<boolean>(false);
+    const [viewFrontTable, setViewFrontTable] = useState<boolean>(true);
     const [autoLotteryInterval, setAutoLotteryInterval] = useState<number>(1000);
     const [animationSteps, setAnimationSteps] = useState<number>(10);
+    const [animationTime, setAnimationTime] = useState<number>(1000);
+    const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
+
     const [seatSettingModalOpen, setSeatSettingModalOpen] = useState<boolean>(false);
+    const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+    const [membersModalOpen, setMembersModalOpen] = useState<boolean>(false);
+    const [membersInput, setMembersInput] = useState<string>("");
+    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+    const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
     const [rollAudio, setRollAudio] = useState<HTMLAudioElement | null>(null);
     const [rollCloseAudio, setRollCloseAudio] = useState<HTMLAudioElement | null>(null);
@@ -43,377 +54,49 @@ export default function HomePage() {
         setRollAudio(new Audio("/sounds/roll.mp3"));
         setRollCloseAudio(new Audio("/sounds/roll-close.mp3"));
 
-        // 仮データ
-        setMembers(new Map([
-            [
-                1,
-                {
-                    "name": "佐々木優太",
-                    "pronouns": "ささきゆうた"
-                }
-            ],
-            [
-                2,
-                {
-                    "name": "山本和子",
-                    "pronouns": "やまもとかずこ"
-                }
-            ],
-            [
-                3,
-                {
-                    "name": "中村健太郎",
-                    "pronouns": "なかむらけんたろう"
-                }
-            ],
-            [
-                4,
-                {
-                    "name": "小川美穂",
-                    "pronouns": "おがわみほ"
-                }
-            ],
-            [
-                5,
-                {
-                    "name": "井上大輔",
-                    "pronouns": "いのうえだいすけ"
-                }
-            ],
-            [
-                6,
-                {
-                    "name": "斎藤千尋",
-                    "pronouns": "さいとうちひろ"
-                }
-            ],
-            [
-                7,
-                {
-                    "name": "松本龍太",
-                    "pronouns": "まつもとりゅうた"
-                }
-            ],
-            [
-                8,
-                {
-                    "name": "吉田桃子",
-                    "pronouns": "よしだももこ"
-                }
-            ],
-            [
-                9,
-                {
-                    "name": "清水拓也",
-                    "pronouns": "しみずたくや"
-                }
-            ],
-            [
-                10,
-                {
-                    "name": "石川奈々",
-                    "pronouns": "いしかわなな"
-                }
-            ],
-            [
-                11,
-                {
-                    "name": "木村聡太",
-                    "pronouns": "きむらそうた"
-                }
-            ],
-            [
-                12,
-                {
-                    "name": "山田太郎",
-                    "pronouns": "やまだたろう"
-                }
-            ],
-            [
-                13,
-                {
-                    "name": "佐藤花子",
-                    "pronouns": "さとうはなこ"
-                }
-            ],
-            [
-                14,
-                {
-                    "name": "鈴木一郎",
-                    "pronouns": "すずきいちろう"
-                }
-            ],
-            [
-                15,
-                {
-                    "name": "田中美咲",
-                    "pronouns": "たなかみさき"
-                }
-            ],
-            [
-                16,
-                {
-                    "name": "高橋健太",
-                    "pronouns": "たかはしけんた"
-                }
-            ],
-            [
-                17,
-                {
-                    "name": "伊藤優子",
-                    "pronouns": "いとうゆうこ"
-                }
-            ],
-            [
-                18,
-                {
-                    "name": "渡辺翔太",
-                    "pronouns": "わたなべしょうた"
-                }
-            ],
-            [
-                19,
-                {
-                    "name": "小林明日香",
-                    "pronouns": "こばやしあすか"
-                }
-            ],
-            [
-                20,
-                {
-                    "name": "加藤雄大",
-                    "pronouns": "かとうゆうだい"
-                }
-            ],
-            [
-                21,
-                {
-                    "name": "中野直樹",
-                    "pronouns": "なかのなおき"
-                }
-            ],
-            [
-                22,
-                {
-                    "name": "遠藤さくら",
-                    "pronouns": "えんどうさくら"
-                }
-            ],
-            [
-                23,
-                {
-                    "name": "藤田隆一",
-                    "pronouns": "ふじたりゅういち"
-                }
-            ],
-            [
-                24,
-                {
-                    "name": "長谷川真理",
-                    "pronouns": "はせがわまり"
-                }
-            ],
-            [
-                25,
-                {
-                    "name": "村上誠司",
-                    "pronouns": "むらかみせいじ"
-                }
-            ],
-            [
-                26,
-                {
-                    "name": "大野綾香",
-                    "pronouns": "おおのあやか"
-                }
-            ],
-            [
-                27,
-                {
-                    "name": "西村拓海",
-                    "pronouns": "にしむらたくみ"
-                }
-            ],
-            [
-                28,
-                {
-                    "name": "松田恵子",
-                    "pronouns": "まつだけいこ"
-                }
-            ],
-            [
-                29,
-                {
-                    "name": "野口達也",
-                    "pronouns": "のぐちたつや"
-                }
-            ],
-            [
-                30,
-                {
-                    "name": "岡田千晶",
-                    "pronouns": "おかだちあき"
-                }
-            ],
-            [
-                31,
-                {
-                    "name": "白石優介",
-                    "pronouns": "しらいしゆうすけ"
-                }
-            ],
-            [
-                32,
-                {
-                    "name": "三浦結衣",
-                    "pronouns": "みうらゆい"
-                }
-            ],
-            [
-                33,
-                {
-                    "name": "近藤健一",
-                    "pronouns": "こんどうけんいち"
-                }
-            ],
-            [
-                34,
-                {
-                    "name": "市川彩花",
-                    "pronouns": "いちかわあやか"
-                }
-            ],
-            [
-                35,
-                {
-                    "name": "原田智樹",
-                    "pronouns": "はらだともき"
-                }
-            ],
-            [
-                36,
-                {
-                    "name": "坂本美優",
-                    "pronouns": "さかもとみゆう"
-                }
-            ],
-            [
-                37,
-                {
-                    "name": "杉山雄介",
-                    "pronouns": "すぎやまゆうすけ"
-                }
-            ],
-            [
-                38,
-                {
-                    "name": "前田明日香",
-                    "pronouns": "まえだあすか"
-                }
-            ],
-            [
-                39,
-                {
-                    "name": "森本大輔",
-                    "pronouns": "もりもとだいすけ"
-                }
-            ],
-            [
-                40,
-                {
-                    "name": "内田麻衣",
-                    "pronouns": "うちだまい"
-                }
-            ],
-            [
-                41,
-                {
-                    "name": "青木龍也",
-                    "pronouns": "あおきたつや"
-                }
-            ],
-            [
-                42,
-                {
-                    "name": "宮崎春菜",
-                    "pronouns": "みやざきはるな"
-                }
-            ],
-            [
-                43,
-                {
-                    "name": "横山裕太",
-                    "pronouns": "よこやまゆうた"
-                }
-            ],
-            [
-                44,
-                {
-                    "name": "本田理沙",
-                    "pronouns": "ほんだりさ"
-                }
-            ]
-        ]));
-        setNext(12);
-        setSeatRows(8);
-        setSeatColumns(6);
-        setSeatRowsSpacer(0);
-        setSeatColumnsSpacer(2);
-        setSeatFrontThreshold(2);
-        setViewFrontTable(true);
-        setSeats(new Map([
-            ["1-1", 1],
-            ["1-2", 2],
-            ["1-3", 3],
-            ["1-4", 4],
-            // ["1-5", 5],
-            // ["1-6", 6],
-            // ["2-1", 7],
-            // ["2-2", 8],
-            ["2-3", 9],
-            ["2-4", 10],
-            ["2-5", 11],
-            ["2-6", 12],
-            ["3-1", 13],
-            ["3-2", 14],
-            ["3-3", 15],
-            ["3-4", 16],
-            ["3-5", 17],
-            ["3-6", 18]
-            // ["4-1", 19],
-            // ["4-2", 20],
-            // ["4-3", 21],
-            // ["4-4", 22],
-            // ["4-5", 23],
-            // ["4-6", 24],
-            // ["5-1", 25],
-            // ["5-2", 26],
-            // ["5-3", 27],
-            // ["5-4", 28],
-            // ["5-5", 29],
-            // ["5-6", 30],
-            // ["6-1", 31],
-            // ["6-2", 32],
-            // ["6-3", 33],
-            // ["6-4", 34],
-            // ["6-5", 35],
-            // ["6-6", 36],
-            // ["7-1", 37],
-            // ["7-2", 38],
-            // ["7-3", 39],
-            // ["7-4", 40],
-            // ["7-5", 41],
-            // ["7-6", 42],
-            // ["8-3", 43],
-            // ["8-4", 44]
-        ]));
-        setDisabledSeats(new Map([
-            ["8-1", true],
-            ["8-2", true],
-            ["8-5", true],
-            ["8-6", true]
-        ]));
+        // ローカルストレージから設定を読み込む
+        const settings = localStorage.getItem("settings");
+        const parsedSettings = JSON.parse(settings || "{}");
+        setSeatRows(parsedSettings.seatRows || 6);
+        setSeatColumns(parsedSettings.seatColumns || 6);
+        setSeatRowsSpacer(parsedSettings.seatRowsSpacer || 0);
+        setSeatColumnsSpacer(parsedSettings.seatColumnsSpacer || 2);
+        setSeatFrontThreshold(parsedSettings.seatFrontThreshold || 2);
+        setDisabledSeats(new Map(parsedSettings.disabledSeats || []));
+        setSeats(new Map(parsedSettings.seats || []));
+        setMembers(new Map(parsedSettings.members || []));
+        setViewFrontTable(parsedSettings.viewFrontTable || true);
+        setAutoLotteryInterval(parsedSettings.autoLotteryInterval || 1000);
+        setAnimationSteps(parsedSettings.animationSteps || 10);
+        setAnimationTime(parsedSettings.animationTime || 1000);
+        setAudioEnabled(parsedSettings.audioEnabled || true);
     }, []);
+
+    useEffect(() => {
+        // 設定の保存
+        const settings = {
+            seatRows,
+            seatColumns,
+            seatRowsSpacer,
+            seatColumnsSpacer,
+            seatFrontThreshold,
+            "disabledSeats": Array.from(disabledSeats || []),
+            "seats": Array.from(seats || []),
+            "members": Array.from(members || []),
+            viewFrontTable,
+            autoLotteryInterval,
+            animationSteps,
+            animationTime,
+            audioEnabled
+        };
+        localStorage.setItem("settings", JSON.stringify(settings));
+
+        // メンバー設定
+        setMembersInput(Array.from(members || []).map(([_, member]) => `${member.name}, ${member.pronouns}`).join("\n"));
+
+        // 次の人の設定
+        setNext(!members || members.size === 0 ? null : (next ? next : 1));
+    }, [seatRows, seatColumns, seatRowsSpacer, seatColumnsSpacer, seatFrontThreshold, disabledSeats, seats, next, members, autoLottery, frontSelect, viewFrontTable, autoLotteryInterval, animationSteps]);
 
     const row = seatRows || 0;
     const column = seatColumns || 0;
@@ -454,7 +137,8 @@ export default function HomePage() {
 
         const availableSeats = allSeats.filter(seat => !seats.has(seat) && !disabledSeats?.get(seat));
         if (availableSeats.length === 0) {
-            alert("空いている席がありません。");
+            setSnackbarMessage("空いている座席がありません。");
+            setSnackbarOpen(true);
             setAutoLottery(false);
             return;
         }
@@ -471,7 +155,7 @@ export default function HomePage() {
         const originalSeats = new Map(seats);
 
         // 抽選アニメーション
-        rollAudio?.play().catch(() => { });
+        if (audioEnabled) rollAudio?.play().catch(() => { });
         let animationStep = 0;
         const animateStep = () => {
             if (animationStep < animationSteps) {
@@ -479,13 +163,15 @@ export default function HomePage() {
                 const randomSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
                 setSeats(new Map(originalSeats).set(randomSeat, number));
                 animationStep++;
-                setTimeout(animateStep, 100);
+                setTimeout(animateStep, animationTime / animationSteps);
             } else {
                 // アニメーション完了後、最終的な座席を設定
-                rollAudio?.pause();
-                if (rollAudio) rollAudio.currentTime = 0;
-                if (rollCloseAudio) rollCloseAudio.currentTime = 0;
-                rollCloseAudio?.play().catch(() => { });
+                if (audioEnabled) {
+                    rollAudio?.pause();
+                    if (rollAudio) rollAudio.currentTime = 0;
+                    if (rollCloseAudio) rollCloseAudio.currentTime = 0;
+                    rollCloseAudio?.play().catch(() => { });
+                }
                 setSeats(new Map(originalSeats).set(selectedSeat, number));
                 if (next !== members?.size) {
                     setNext(next + 1);
@@ -513,12 +199,19 @@ export default function HomePage() {
                     "borderBottom": "1px solid",
                     "borderColor": "divider"
                 }}>
-                <Typography level="h1" sx={{ "flexGrow": 1, "fontSize": "1.5rem" }}>
+                <Typography level="h1" sx={{ "flex": 1, "fontSize": "1.5rem" }}>
                     <img src="/images/logo.svg" alt="Open Sékigae" style={{ "height": "1em", "verticalAlign": "middle" }} />
                 </Typography>
-                <IconButton style={{ "borderRadius": "100vw" }} aria-label="Settings">
-                    <SettingsRounded color="primary" />
-                </IconButton>
+                <Box display="flex" sx={{ "gap": 1 }}>
+                    <Badge badgeContent={members?.size} max={99} badgeInset="14%" size="sm">
+                        <IconButton style={{ "borderRadius": "100vw" }} aria-label="Members" onClick={() => setMembersModalOpen(true)}>
+                            <PersonRounded color="primary" />
+                        </IconButton>
+                    </Badge>
+                    <IconButton style={{ "borderRadius": "100vw" }} aria-label="Settings" onClick={() => setSettingsModalOpen(true)}>
+                        <SettingsRounded color="primary" />
+                    </IconButton>
+                </Box>
             </Sheet>
 
             {/* Main */}
@@ -539,7 +232,7 @@ export default function HomePage() {
                                             {next ? next : "?"}
                                         </Skeleton>
                                     </Avatar>
-                                    <Box display="flex" flexDirection="column" sx={{ "flexGrow": 1 }}>
+                                    <Box display="flex" flexDirection="column" sx={{ "flex": 1 }}>
                                         <Typography>
                                             <Skeleton loading={!next} animation="wave">
                                                 {next ? members?.get(next)?.pronouns : "名無しの権兵衛の代名詞"}
@@ -576,7 +269,7 @@ export default function HomePage() {
                                         <Avatar size="lg">
                                             {next}
                                         </Avatar>
-                                        <Box display="flex" flexDirection="column" sx={{ "flexGrow": 1 }}>
+                                        <Box display="flex" flexDirection="column" sx={{ "flex": 1 }}>
                                             <Typography>
                                                 {members?.get(next || 0)?.pronouns}
                                             </Typography>
@@ -657,7 +350,7 @@ export default function HomePage() {
                         </Card>
 
                         {/* members list */}
-                        <List className="members-list" sx={{ "height": "0px", "overflowY": "scroll", "flexGrow": 1 }}>
+                        <List className="members-list" sx={{ "height": "0px", "overflowY": "scroll", "flex": 1 }}>
                             <Skeleton loading={!members} animation="wave">
                                 {Array.from(members || []).map(([id, member]) => (
                                     <ListItem key={id} sx={{ "justifyContent": "space-between" }}>
@@ -712,7 +405,7 @@ export default function HomePage() {
                         <Skeleton loading={!seatRows || !seatColumns} animation="wave" sx={{ "flex": 1, "margin": -2 }}>
                             <Box className="seats-row-container" display="flex" flexDirection="column" sx={{ "gap": 2, "flex": 1 }}>
                                 {Array.from({ "length": row + row / rowsSpacer - 1 }).map((_, rowIndex) => (
-                                    <Box className="seats-column-container" key={rowIndex} display="flex" flexDirection="row" sx={{ "gap": 2, "flexGrow": rowIndex % (rowsSpacer + 1) === rowsSpacer ? 0 : 1 }}>
+                                    <Box className="seats-column-container" key={rowIndex} display="flex" flexDirection="row" sx={{ "gap": 2, "flex": rowIndex % (rowsSpacer + 1) === rowsSpacer ? 0 : 1 }}>
                                         {Array.from({ "length": column + column / columnsSpacer - 1 }).map((_, colIndex) => (
                                             (rowIndex % (rowsSpacer + 1) === rowsSpacer || colIndex % (columnsSpacer + 1) === columnsSpacer) ? (
                                                 <Box className="seat-spacer" key={`${rowIndex}-${colIndex}`} sx={{ "minWidth": "1rem", "minHeight": "1rem" }} />
@@ -779,6 +472,213 @@ export default function HomePage() {
 
             </Box>
 
+            {/* Members Modal */}
+            <Modal open={membersModalOpen} onClose={() => setMembersModalOpen(false)}>
+                <ModalDialog>
+                    <ModalClose />
+                    <Typography level="title-lg">
+                        メンバー設定
+                    </Typography>
+
+                    メンバーの名前と読み方を設定します。<br />
+                    <br />
+                    番号は自動的に上から1, 2, 3...と割り当てられます。<br />
+                    以下のように、名前と読み方を入力してください。
+                    <Card variant="soft" sx={{ "gap": 0 }}>
+                        <Typography level="body-sm">
+                            例:
+                        </Typography>
+                        山田太郎, やまだたろう
+                        <br />
+                        鈴木花子, すずきはなこ
+                    </Card>
+
+                    <Box display="flex" flexDirection="column" sx={{ "gap": 2, "overflowY": "auto" }}>
+                        <Textarea
+                            minRows={10}
+                            value={membersInput}
+                            onChange={(e) => setMembersInput(e.target.value)}
+                            placeholder="メンバーの名前と読み方を入力してください。"
+                            endDecorator={
+                                <Typography level="body-xs" sx={{ "ml": "auto" }}>
+                                    {membersInput.trim().length > 0 ? membersInput.trim().split("\n").length : 0}行
+                                </Typography>
+                            }
+                        />
+                    </Box>
+
+                    <Button variant="solid" onClick={() => {
+                        const newMembers = new Map<number, Member>();
+                        membersInput.trim().split("\n").forEach((line, index) => {
+                            const [name, pronouns] = line.split(",").map(part => part.trim());
+                            if (name && pronouns) {
+                                newMembers.set(index + 1, { name, pronouns });
+                            }
+                        });
+                        setMembers(newMembers);
+
+                        setMembersModalOpen(false);
+                    }}>
+                        閉じる
+                    </Button>
+                </ModalDialog>
+            </Modal>
+
+            {/* Settings Modal */}
+            <Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
+                <ModalDialog>
+                    <ModalClose />
+                    <Typography level="title-lg">
+                        設定
+                    </Typography>
+
+                    <Box display="flex" flexDirection="column" sx={{ "gap": 2, "overflowY": "auto" }}>
+                        <Typography level="title-md" sx={{ "mb": -2 }}>
+                            座席の設定
+                        </Typography>
+
+                        <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
+                            <FormControl sx={{ "flex": 1 }}>
+                                <FormLabel>座席行数</FormLabel>
+                                <Input
+                                    type="number"
+                                    value={seatRows || 6}
+                                    onChange={(e) => setSeatRows(Number(e.target.value))}
+                                    placeholder="行数を入力"
+                                    slotProps={{ "input": { "min": 1, "max": 20 } }}
+                                />
+                            </FormControl>
+                            <FormControl sx={{ "flex": 1 }}>
+                                <FormLabel>座席列数</FormLabel>
+                                <Input
+                                    type="number"
+                                    value={seatColumns || 6}
+                                    onChange={(e) => setSeatColumns(Number(e.target.value))}
+                                    placeholder="列数を入力"
+                                    slotProps={{ "input": { "min": 1, "max": 20 } }}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
+                            <FormControl sx={{ "flex": 1 }}>
+                                <FormLabel>座席行グループ</FormLabel>
+                                <Input
+                                    type="number"
+                                    value={seatRowsSpacer || 0}
+                                    onChange={(e) => setSeatRowsSpacer(Number(e.target.value))}
+                                    placeholder="行間隔を入力"
+                                    slotProps={{ "input": { "min": 0, "max": 10 } }}
+                                />
+                            </FormControl>
+                            <FormControl sx={{ "flex": 1 }}>
+                                <FormLabel>座席列グループ</FormLabel>
+                                <Input
+                                    type="number"
+                                    value={seatColumnsSpacer || 2}
+                                    onChange={(e) => setSeatColumnsSpacer(Number(e.target.value))}
+                                    placeholder="列間隔を入力"
+                                    slotProps={{ "input": { "min": 0, "max": 10 } }}
+                                />
+                            </FormControl>
+                        </Box>
+
+                        <FormControl>
+                            <FormLabel>前寄り指定行数</FormLabel>
+                            <Input
+                                type="number"
+                                value={seatFrontThreshold || 2}
+                                onChange={(e) => setSeatFrontThreshold(e.target.value ? Number(e.target.value) : null)}
+                                placeholder="前寄り指定の行数を入力"
+                                slotProps={{ "input": { "min": 0, "max": row } }}
+                            />
+                        </FormControl>
+
+                        <Typography level="title-md" sx={{ "mb": -2 }}>
+                            抽選の設定
+                        </Typography>
+
+                        <FormControl>
+                            <FormLabel>自動抽選間隔</FormLabel>
+                            <Input
+                                type="number"
+                                value={autoLotteryInterval}
+                                onChange={(e) => setAutoLotteryInterval(Number(e.target.value))}
+                                placeholder="自動抽選の間隔をミリ秒で入力"
+                                slotProps={{ "input": { "min": 100, "max": 10000 } }}
+                            />
+                        </FormControl>
+
+                        <Typography level="title-sm" sx={{ "mb": -2 }}>
+                            アニメーション
+                        </Typography>
+
+                        <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
+                            <FormControl sx={{ "flex": 1 }}>
+                                <FormLabel>時間</FormLabel>
+                                <Input
+                                    type="number"
+                                    value={animationTime}
+                                    onChange={(e) => setAnimationTime(Number(e.target.value))}
+                                    placeholder="アニメーションの時間をミリ秒で入力"
+                                    slotProps={{ "input": { "min": 100, "max": 5000 } }}
+                                />
+                            </FormControl>
+                            <FormControl sx={{ "flex": 1 }}>
+                                <FormLabel>ステップ数</FormLabel>
+                                <Input
+                                    type="number"
+                                    value={animationSteps}
+                                    onChange={(e) => setAnimationSteps(Number(e.target.value))}
+                                    placeholder="アニメーションのステップ数を入力"
+                                    slotProps={{ "input": { "min": 0, "max": 10 } }}
+                                />
+                            </FormControl>
+                        </Box>
+
+                        <Typography level="title-sm" sx={{ "mb": -2 }}>
+                            リセット
+                        </Typography>
+
+                        <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
+                            <Button
+                                variant="outlined"
+                                color="danger"
+                                onClick={() => {
+                                    if (confirm("座席をリセットしますか？")) {
+                                        setSeats(new Map());
+                                    }
+                                }}
+                                sx={{ "flex": 1 }}>
+                                座席
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="danger"
+                                onClick={() => {
+                                    if (confirm("すべての設定をリセットしますか？") && confirm("本当にすべての設定をリセットしますか？")) {
+                                        localStorage.removeItem("settings");
+                                        location.reload();
+                                    }
+                                }}
+                                sx={{ "flex": 1 }}>
+                                すべての設定
+                            </Button>
+                        </Box>
+                    </Box>
+
+                    <Button variant="solid" onClick={() => setSettingsModalOpen(false)}>
+                        閉じる
+                    </Button>
+                </ModalDialog>
+            </Modal>
+
+            {/* Snackbar */}
+            <Snackbar
+                open={snackbarOpen}
+                onClose={() => setSnackbarOpen(false)}
+                autoHideDuration={3000}>
+                {snackbarMessage}
+            </Snackbar>
         </Box>
     );
 }
