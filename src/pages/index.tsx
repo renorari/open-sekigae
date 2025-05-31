@@ -2,7 +2,7 @@
 
 import "../styles/main.css";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { KeyboardArrowLeft, KeyboardArrowRight, SettingsRounded } from "@mui/icons-material";
 import {
@@ -31,6 +31,7 @@ export default function HomePage() {
 
     const [autoLottery, setAutoLottery] = useState<boolean>(false);
     const [frontSelect, setFrontSelect] = useState<boolean>(false);
+    const [autoLotteryInterval, setAutoLotteryInterval] = useState<number>(1000);
 
     useEffect(() => {
         // 仮データ
@@ -413,6 +414,37 @@ export default function HomePage() {
         return `${Math.floor(i / column) + 1}-${(i % column) + 1}`;
     });
 
+    // 自動抽選のuseEffect
+    useEffect(() => {
+        if (!autoLottery || !next || !members || !seats) return;
+
+        // 全員の席が決まっているかチェック
+        const assignedMembers = Array.from(seats.values());
+        if (assignedMembers.length >= members.size) {
+            setAutoLottery(false);
+            return;
+        }
+
+        // 現在の人がすでに席が決まっているかチェック
+        if (assignedMembers.includes(next)) {
+            // 次の人に進む
+            const nextMember = next < members.size ? next + 1 : 1;
+            setNext(nextMember);
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            lottery(next);
+            if (next !== members.size) {
+                setNext(next + 1);
+            } else {
+                setNext(1);
+            }
+        }, autoLotteryInterval);
+
+        return () => clearTimeout(timer);
+    }, [autoLottery, next, members, seats, autoLotteryInterval]);
+
     function lottery(number: number) {
         setSeats((seats) => {
             if (!seats) return null;
@@ -420,13 +452,13 @@ export default function HomePage() {
             const availableSeats = allSeats.filter(seat => !seats.has(seat) && !disabledSeats?.get(seat));
             if (availableSeats.length === 0) {
                 alert("空いている席がありません。");
+                setAutoLottery(false); // 自動抽選を停止
                 return seats;
             }
 
-            const completeMembers = Array.from(seats.values());
-            if (completeMembers.includes(number)) {
-                alert("この人はすでに席が決まっています。");
-                return seats;
+            const assignedMembers = Array.from(seats.values());
+            if (assignedMembers.includes(number)) {
+                return seats; // アラートは出さずに自動で次に進む
             }
 
             const selectedSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
@@ -499,7 +531,7 @@ export default function HomePage() {
                                     </IconButton>
                                 </ButtonGroup>
                                 <Button variant="outlined">手動設定</Button>
-                                <Button endDecorator={<KeyboardArrowRight />} disabled={!next || !!seats?.values().find(seat => seat === next)} onClick={() => {
+                                <Button endDecorator={<KeyboardArrowRight />} disabled={!next || !!seats?.values().find(seat => seat === next) || autoLottery} onClick={() => {
                                     if (!next) return;
                                     
                                     lottery(next);
@@ -508,7 +540,7 @@ export default function HomePage() {
                                     } else {
                                         setNext(1);
                                     }
-                                }}>抽選開始</Button>
+                                }}>{autoLottery ? "抽選中…" : "抽選開始"}</Button>
                             </CardActions>
                         </Card>
 
