@@ -9,8 +9,8 @@ import theme from "../theme.config";
 
 type RootLayoutProps = { children: ReactNode };
 
-const baseUrl = import.meta.env.URL || "https://sekigae.renorari.net";
-const gTagId = import.meta.env.GTAG_ID || "";
+const baseUrl = import.meta.env.WAKU_PUBLIC_URL || "https://sekigae.renorari.net";
+const gTagId = import.meta.env.WAKU_PUBLIC_GTAG_ID || "";
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const router = useRouter();
