@@ -1,7 +1,5 @@
 "use client";
 
-import "dotenv/config";
-
 import React, { ReactNode } from "react";
 import { useRouter } from "waku";
 
