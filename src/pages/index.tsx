@@ -40,6 +40,7 @@ export default function HomePage() {
     const [frontSelect, setFrontSelect] = useState<boolean>(false);
     const [turn, setTurn] = useState<boolean>(false);
     const [viewFrontTable, setViewFrontTable] = useState<boolean>(true);
+    const [frontTableName, setFrontTableName] = useState<string>("教卓");
     const [autoLotteryInterval, setAutoLotteryInterval] = useState<number>(1000);
     const [animationSteps, setAnimationSteps] = useState<number>(10);
     const [animationTime, setAnimationTime] = useState<number>(1000);
@@ -74,6 +75,7 @@ export default function HomePage() {
         setMembers(new Map(parsedSettings.members || []));
         setTurn(parsedSettings.turn || false);
         setViewFrontTable(parsedSettings.viewFrontTable || true);
+        setFrontTableName(parsedSettings.frontTableName || "教卓");
         setAutoLotteryInterval(parsedSettings.autoLotteryInterval || 1000);
         setAnimationSteps(parsedSettings.animationSteps || 10);
         setAnimationTime(parsedSettings.animationTime || 1000);
@@ -93,6 +95,7 @@ export default function HomePage() {
             "members": Array.from(members || []),
             turn,
             viewFrontTable,
+            frontTableName,
             autoLotteryInterval,
             animationSteps,
             animationTime,
@@ -412,7 +415,7 @@ export default function HomePage() {
                                 <Card className="seat front-table" sx={{ "width": "50%", "margin": "0 auto" }} variant="soft">
                                     <CardContent>
                                         <Typography className="seat-name" textAlign="center">
-                                            教卓
+                                            {frontTableName}
                                         </Typography>
                                     </CardContent>
                                 </Card>
@@ -552,15 +555,24 @@ export default function HomePage() {
                                 一般設定
                             </Typography>
                             <Box>
+                                <Typography component="label" startDecorator={<AnimeSwitch checked={audioEnabled} onChange={() => setAudioEnabled(!audioEnabled)} />}>
+                                    音声を有効にする
+                                </Typography>
                                 <Typography component="label" startDecorator={<AnimeSwitch checked={turn} onChange={() => setTurn(!turn)} />}>
                                     座席を反転表示
                                 </Typography>
                                 <Typography component="label" startDecorator={<AnimeSwitch checked={viewFrontTable} onChange={() => setViewFrontTable(!viewFrontTable)} />}>
-                                    教卓を表示
+                                    {frontTableName}を表示
                                 </Typography>
-                                <Typography component="label" startDecorator={<AnimeSwitch checked={audioEnabled} onChange={() => setAudioEnabled(!audioEnabled)} />}>
-                                    音声を有効にする
-                                </Typography>
+                                <FormControl>
+                                    <FormLabel>教卓の表示名</FormLabel>
+                                    <Input
+                                        type="text"
+                                        value={frontTableName}
+                                        onChange={(e) => setFrontTableName(e.target.value)}
+                                        placeholder="教卓の表示名を入力"
+                                    />
+                                </FormControl>
                             </Box>
 
                             <Typography level="title-md" sx={{ "mb": -2 }}>
@@ -715,7 +727,7 @@ export default function HomePage() {
                                 onClick={() => {
                                     setExportModalOpen(false);
                                     const csvContent = [];
-                                    csvContent.push("教卓,,,,,");
+                                    csvContent.push(frontTableName + ",,,,,");
                                     for (let r = 1; r <= row; r++) {
                                         const rowData = [];
                                         for (let c = 1; c <= column; c++) {
