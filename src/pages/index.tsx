@@ -5,6 +5,7 @@ import "../styles/main.css";
 import React, { useEffect, useState } from "react";
 
 import DataArrayRounded from "@mui/icons-material/DataArrayRounded";
+import HelpRounded from "@mui/icons-material/HelpRounded";
 import IosShareRounded from "@mui/icons-material/IosShareRounded";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
@@ -13,8 +14,8 @@ import PrintRounded from "@mui/icons-material/PrintRounded";
 import SettingsRounded from "@mui/icons-material/SettingsRounded";
 import {
     Avatar, Badge, Box, Button, ButtonGroup, Card, CardActions, CardContent, FormControl, FormLabel,
-    IconButton, Input, List, ListItem, Modal, ModalClose, ModalDialog, Sheet, Skeleton, Snackbar,
-    Textarea, Typography
+    IconButton, Input, Link, List, ListItem, Modal, ModalClose, ModalDialog, Sheet, Skeleton,
+    Snackbar, Textarea, Typography
 } from "@mui/joy";
 
 import AnimeSwitch from "../components/AnimeSwitch";
@@ -218,15 +219,25 @@ export default function HomePage() {
                     </Typography>
                     <Box display="flex" sx={{ "gap": 1 }}>
                         <Badge badgeContent={members?.size} max={99} badgeInset="14%" size="sm">
-                            <IconButton style={{ "borderRadius": "100vw" }} aria-label="Members" onClick={() => setMembersModalOpen(true)}>
+                            <IconButton sx={{ "borderRadius": "100vw" }} aria-label="Members" onClick={() => setMembersModalOpen(true)}>
                                 <PersonRounded color="primary" />
                             </IconButton>
                         </Badge>
-                        <IconButton style={{ "borderRadius": "100vw" }} aria-label="Export" onClick={() => setExportModalOpen(true)}>
+                        <IconButton sx={{ "borderRadius": "100vw" }} aria-label="Export" onClick={() => setExportModalOpen(true)}>
                             <IosShareRounded color="primary" />
                         </IconButton>
-                        <IconButton style={{ "borderRadius": "100vw" }} aria-label="Settings" onClick={() => setSettingsModalOpen(true)}>
+                        <IconButton sx={{ "borderRadius": "100vw" }} aria-label="Settings" onClick={() => setSettingsModalOpen(true)}>
                             <SettingsRounded color="primary" />
+                        </IconButton>
+                        <IconButton 
+                            sx={{ "borderRadius": "100vw" }} 
+                            aria-label="Help" 
+                            component={Link}
+                            href="https://github.com/renorari/open-sekigae/wiki"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <HelpRounded color="primary" />
                         </IconButton>
                     </Box>
                 </Sheet>
