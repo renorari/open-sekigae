@@ -170,7 +170,7 @@ export default function HomePage() {
       .filter(([a, b]) => typeof a === "number" && typeof b === "number")
       .flatMap(([a, b]) => a === b ? [[a, b]] : [[a, b], [b, a]]);
 
-    // distanceMembersの考慮1: 同じ行・列にならないかつ上下左右斜め1マス離す
+    // distanceMembersの考慮1: 同じ行・列と左右の列・前後の列にならないかつ上下左右斜め2マス離す
     let trulyAvailableSeats = availableSeats.filter(seat => {
       for (const [memberA, memberB] of distanceMembersArray) {
         if (memberB !== number) continue;
@@ -180,13 +180,46 @@ export default function HomePage() {
         const [memberASeatPos] = memberASeat;
         const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
         const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
-        if (seatRow === memberARow || seatCol === memberACol) return false;
-        if (Math.abs(seatRow - memberARow) <= 1 && Math.abs(seatCol - memberACol) <= 1) return false;
+        if (Math.abs(seatRow - memberARow) <= 2 && Math.abs(seatCol - memberACol) <= 2) return false;
       }
       return true;
     });
     if (trulyAvailableSeats.length === 0) {
-      // distanceMembersの考慮2: 上下左右斜めに1マス離す
+      // distanceMembersの考慮2: 同じ行・列にならないかつ上下左右斜め2マス離す
+      trulyAvailableSeats = availableSeats.filter(seat => {
+        for (const [memberA, memberB] of distanceMembersArray) {
+          if (memberB !== number) continue;
+          // memberBがnumberの場合、memberAの行・列をチェック
+          const memberASeat = Array.from(seats.entries()).find(([_, member]) => member === memberA);
+          if (!memberASeat) continue;
+          const [memberASeatPos] = memberASeat;
+          const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
+          const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
+          if (seatRow === memberARow || seatCol === memberACol) return false;
+          if (Math.abs(seatRow - memberARow) <= 2 && Math.abs(seatCol - memberACol) <= 2) return false;
+        }
+        return true;
+      });
+    }
+    if (trulyAvailableSeats.length === 0) {
+      // distanceMembersの考慮3: 同じ行・列にならないかつ上下左右斜め1マス離す
+      trulyAvailableSeats = availableSeats.filter(seat => {
+        for (const [memberA, memberB] of distanceMembersArray) {
+          if (memberB !== number) continue;
+          // memberBがnumberの場合、memberAの行・列をチェック
+          const memberASeat = Array.from(seats.entries()).find(([_, member]) => member === memberA);
+          if (!memberASeat) continue;
+          const [memberASeatPos] = memberASeat;
+          const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
+          const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
+          if (seatRow === memberARow || seatCol === memberACol) return false;
+          if (Math.abs(seatRow - memberARow) <= 1 && Math.abs(seatCol - memberACol) <= 1) return false;
+        }
+        return true;
+      });
+    }
+    if (trulyAvailableSeats.length === 0) {
+      // distanceMembersの考慮4: 上下左右斜めに1マス離す
       trulyAvailableSeats = availableSeats.filter(seat => {
         for (const [memberA, memberB] of distanceMembersArray) {
           if (memberB !== number) continue;
@@ -202,7 +235,7 @@ export default function HomePage() {
       });
     }
     if (trulyAvailableSeats.length === 0) {
-      // distanceMembersの考慮3: 上下左右に1マス離す
+      // distanceMembersの考慮5: 上下左右に1マス離す
       trulyAvailableSeats = availableSeats.filter(seat => {
         for (const [memberA, memberB] of distanceMembersArray) {
           if (memberB !== number) continue;
@@ -219,7 +252,7 @@ export default function HomePage() {
       });
     }
     if (trulyAvailableSeats.length === 0) {
-      // distanceMembersの考慮4: 左右に1マス離す
+      // distanceMembersの考慮6: 左右に1マス離す
       trulyAvailableSeats = availableSeats.filter(seat => {
         for (const [memberA, memberB] of distanceMembersArray) {
           if (memberB !== number) continue;
