@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 import pluginJs from "@eslint/js";
 
-import pluginRenorari from "./eslint/index.js";
+import pluginRenorari from "./eslint";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [

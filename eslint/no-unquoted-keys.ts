@@ -2,7 +2,9 @@
     No unquoted keys in objects
 */
 
-export default {
+import type ESLint from "eslint";
+
+const noUnquotedKeys: ESLint.Rule.RuleModule = {
     "meta": {
         "type": "suggestion",
         "docs": {
@@ -40,3 +42,5 @@ export default {
         };
     }
 };
+
+export default noUnquotedKeys;

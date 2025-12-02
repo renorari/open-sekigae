@@ -20,15 +20,15 @@
     "waku": "^0.23.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "@stylistic/eslint-plugin-ts": "^4.4.0",
+    "@eslint/js": "^9.39.1",
+    "@stylistic/eslint-plugin-ts": "^4.4.1",
     "@tailwindcss/postcss": "^4.1.7",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
-    "eslint": "^9.28.0",
+    "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.2.0",
+    "globals": "^16.5.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.0"
+    "typescript-eslint": "^8.48.0"
   }
 }

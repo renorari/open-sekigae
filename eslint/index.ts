@@ -2,7 +2,7 @@
     Renorari eslint plugin
 */
 
-import noUnquotedKeys from "./no-unquoted-keys.js";
+import noUnquotedKeys from "./no-unquoted-keys";
 
 export default {
     "rules": {
