@@ -36,6 +36,7 @@ export default function HomePage() {
   const [seats, setSeats] = useState<Map<string, number> | null>(null);
   const [next, setNext] = useState<number | null>(null);
   const [members, setMembers] = useState<Map<number, Member> | null>(null);
+  const [distanceMembers, setDistanceMembers] = useState<Map<number, number> | null>(null);
 
   const [autoLottery, setAutoLottery] = useState<boolean>(false);
   const [frontSelect, setFrontSelect] = useState<boolean>(false);
@@ -49,6 +50,7 @@ export default function HomePage() {
 
   const [seatSettingModalOpen, setSeatSettingModalOpen] = useState<boolean>(false);
   const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [distanceMembersInput, setDistanceMembersInput] = useState<string>("");
   const [membersModalOpen, setMembersModalOpen] = useState<boolean>(false);
   const [membersInput, setMembersInput] = useState<string>("");
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
@@ -74,6 +76,7 @@ export default function HomePage() {
     setDisabledSeats(new Map(parsedSettings.disabledSeats || []));
     setSeats(new Map(parsedSettings.seats || []));
     setMembers(new Map(parsedSettings.members || []));
+    setDistanceMembers(new Map(parsedSettings.distanceMembers || []));
     setTurn(parsedSettings.turn || false);
     setViewFrontTable(parsedSettings.viewFrontTable || true);
     setFrontTableName(parsedSettings.frontTableName || "教卓");
@@ -94,6 +97,7 @@ export default function HomePage() {
       "disabledSeats": Array.from(disabledSeats || []),
       "seats": Array.from(seats || []),
       "members": Array.from(members || []),
+      "distanceMembers": Array.from(distanceMembers || []),
       turn,
       viewFrontTable,
       frontTableName,
@@ -106,12 +110,13 @@ export default function HomePage() {
 
     // メンバー設定
     setMembersInput(Array.from(members || []).map(([_, member]) => `${member.name}, ${member.pronouns}`).join("\n"));
+    setDistanceMembersInput(Array.from(distanceMembers || []).map(([a, b]) => `${a}:${b}`).join("\n"));
 
     // 次の人の設定
     setNext(!members || members.size === 0 ? null : (next ? next : 1));
   }, [
     seatRows, seatColumns, seatRowsSpacer, seatColumnsSpacer, seatFrontThreshold,
-    disabledSeats, seats, members, turn, viewFrontTable,
+    disabledSeats, seats, members, distanceMembers, turn, viewFrontTable,
     autoLotteryInterval, animationSteps, animationTime, audioEnabled
   ]);
 
@@ -160,8 +165,82 @@ export default function HomePage() {
       return;
     }
 
+    // distanceMembersの考慮
+    const distanceMembersArray: [number, number][] = Array.from(distanceMembers || [])
+      .filter(([a, b]) => typeof a === "number" && typeof b === "number")
+      .flatMap(([a, b]) => a === b ? [[a, b]] : [[a, b], [b, a]]);
+
+    // distanceMembersの考慮1: 同じ行・列にならないかつ上下左右斜め1マス離す
+    let trulyAvailableSeats = availableSeats.filter(seat => {
+      for (const [memberA, memberB] of distanceMembersArray) {
+        if (memberB !== number) continue;
+        // memberBがnumberの場合、memberAの行・列をチェック
+        const memberASeat = Array.from(seats.entries()).find(([_, member]) => member === memberA);
+        if (!memberASeat) continue;
+        const [memberASeatPos] = memberASeat;
+        const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
+        const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
+        if (seatRow === memberARow || seatCol === memberACol) return false;
+        if (Math.abs(seatRow - memberARow) <= 1 && Math.abs(seatCol - memberACol) <= 1) return false;
+      }
+      return true;
+    });
+    if (trulyAvailableSeats.length === 0) {
+      // distanceMembersの考慮2: 上下左右斜めに1マス離す
+      trulyAvailableSeats = availableSeats.filter(seat => {
+        for (const [memberA, memberB] of distanceMembersArray) {
+          if (memberB !== number) continue;
+          // memberBがnumberの場合、memberAの行・列をチェック
+          const memberASeat = Array.from(seats.entries()).find(([_, member]) => member === memberA);
+          if (!memberASeat) continue;
+          const [memberASeatPos] = memberASeat;
+          const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
+          const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
+          if (Math.abs(seatRow - memberARow) <= 1 && Math.abs(seatCol - memberACol) <= 1) return false;
+        }
+        return true;
+      });
+    }
+    if (trulyAvailableSeats.length === 0) {
+      // distanceMembersの考慮3: 上下左右に1マス離す
+      trulyAvailableSeats = availableSeats.filter(seat => {
+        for (const [memberA, memberB] of distanceMembersArray) {
+          if (memberB !== number) continue;
+          // memberBがnumberの場合、memberAの行・列をチェック
+          const memberASeat = Array.from(seats.entries()).find(([_, member]) => member === memberA);
+          if (!memberASeat) continue;
+          const [memberASeatPos] = memberASeat;
+          const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
+          const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
+          if (seatRow === memberARow && Math.abs(seatCol - memberACol) <= 1) return false;
+          if (seatCol === memberACol && Math.abs(seatRow - memberARow) <= 1) return false;
+        }
+        return true;
+      });
+    }
+    if (trulyAvailableSeats.length === 0) {
+      // distanceMembersの考慮4: 左右に1マス離す
+      trulyAvailableSeats = availableSeats.filter(seat => {
+        for (const [memberA, memberB] of distanceMembersArray) {
+          if (memberB !== number) continue;
+          // memberBがnumberの場合、memberAの行・列をチェック
+          const memberASeat = Array.from(seats.entries()).find(([_, member]) => member === memberA);
+          if (!memberASeat) continue;
+          const [memberASeatPos] = memberASeat;
+          const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
+          const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
+          if (seatRow === memberARow && Math.abs(seatCol - memberACol) <= 1) return false;
+        }
+        return true;
+      });
+    }
+    if (trulyAvailableSeats.length === 0) {
+      // それでもなければ、availableSeatsを使う
+      trulyAvailableSeats = availableSeats;
+    }
+
     // 最終的に選ばれる座席を先に決定
-    const selectedSeat = availableSeats[Math.floor(Math.random() * availableSeats.length)] as string;
+    const selectedSeat = trulyAvailableSeats[Math.floor(Math.random() * trulyAvailableSeats.length)] as string;
 
     // アニメーション用の座席状態を保存
     const originalSeats = new Map(seats);
@@ -689,6 +768,25 @@ export default function HomePage() {
               </Box>
 
               <Typography level="title-sm" sx={{ "mb": -2 }}>
+                離す設定
+              </Typography>
+
+              <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
+                <Textarea
+                  minRows={3}
+                  value={distanceMembersInput}
+                  onChange={(e) => setDistanceMembersInput(e.target.value)}
+                  placeholder="離すメンバーの番号を1:2のように入力してください。"
+                  sx={{ "flex": 1 }}
+                  endDecorator={
+                    <Typography level="body-xs" sx={{ "ml": "auto" }}>
+                      {distanceMembersInput.trim().length > 0 ? distanceMembersInput.trim().split("\n").length : 0}行
+                    </Typography>
+                  }
+                />
+              </Box>
+
+              <Typography level="title-sm" sx={{ "mb": -2 }}>
                 リセット
               </Typography>
 
@@ -719,7 +817,17 @@ export default function HomePage() {
               </Box>
             </Box>
 
-            <Button variant="solid" onClick={() => setSettingsModalOpen(false)}>
+            <Button variant="solid" onClick={() => {
+              const newDistanceMembers = new Map<number, number>();
+              distanceMembersInput.trim().split("\n").forEach((line) => {
+                const [a, b] = line.split(":").map(part => Number(part.trim()));
+                if (a && b) {
+                  newDistanceMembers.set(a, b);
+                }
+              });
+              setDistanceMembers(newDistanceMembers);
+              setSettingsModalOpen(false);
+            }}>
               閉じる
             </Button>
           </ModalDialog>
