@@ -13,9 +13,9 @@ import PersonRounded from "@mui/icons-material/PersonRounded";
 import PrintRounded from "@mui/icons-material/PrintRounded";
 import SettingsRounded from "@mui/icons-material/SettingsRounded";
 import {
-  Avatar, Badge, Box, Button, ButtonGroup, Card, CardActions, CardContent, FormControl, FormLabel,
-  IconButton, Input, Link, List, ListItem, Modal, ModalClose, ModalDialog, Sheet, Skeleton,
-  Snackbar, Textarea, Typography
+  Accordion, AccordionDetails, AccordionSummary, Avatar, Badge, Box, Button, ButtonGroup, Card,
+  CardActions, CardContent, FormControl, FormLabel, IconButton, Input, Link, List, ListItem,
+  Modal, ModalClose, ModalDialog, Sheet, Skeleton, Snackbar, Textarea, Typography
 } from "@mui/joy";
 
 import AnimeSwitch from "../components/AnimeSwitch";
@@ -767,24 +767,30 @@ export default function HomePage() {
                 </FormControl>
               </Box>
 
-              <Typography level="title-sm" sx={{ "mb": -2 }}>
-                離す設定
-              </Typography>
+              <Accordion>
+                <AccordionSummary>
+                  <Typography level="title-sm">
+                    離す設定
+                  </Typography>
+                </AccordionSummary>
 
-              <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
-                <Textarea
-                  minRows={3}
-                  value={distanceMembersInput}
-                  onChange={(e) => setDistanceMembersInput(e.target.value)}
-                  placeholder="離すメンバーの番号を1:2のように入力してください。"
-                  sx={{ "flex": 1 }}
-                  endDecorator={
-                    <Typography level="body-xs" sx={{ "ml": "auto" }}>
-                      {distanceMembersInput.trim().length > 0 ? distanceMembersInput.trim().split("\n").length : 0}行
-                    </Typography>
-                  }
-                />
-              </Box>
+                <AccordionDetails>
+                  <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
+                    <Textarea
+                      minRows={3}
+                      value={distanceMembersInput}
+                      onChange={(e) => setDistanceMembersInput(e.target.value)}
+                      placeholder="離すメンバーの番号を1:2のように入力してください。"
+                      sx={{ "flex": 1 }}
+                      endDecorator={
+                        <Typography level="body-xs" sx={{ "ml": "auto" }}>
+                          {distanceMembersInput.trim().length > 0 ? distanceMembersInput.trim().split("\n").length : 0}行
+                        </Typography>
+                      }
+                    />
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
 
               <Typography level="title-sm" sx={{ "mb": -2 }}>
                 リセット
