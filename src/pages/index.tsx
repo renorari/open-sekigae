@@ -802,12 +802,15 @@ export default function HomePage() {
 
               <Accordion>
                 <AccordionSummary>
-                  <Typography level="title-sm">
-                    離す設定
+                  <Typography level="title-md">
+                    その他
                   </Typography>
                 </AccordionSummary>
 
                 <AccordionDetails>
+                  <Typography level="title-sm">
+                    離す設定
+                  </Typography>
                   <Box display="flex" flexDirection="row" sx={{ "gap": 2, "alignItems": "center" }}>
                     <Textarea
                       minRows={3}
