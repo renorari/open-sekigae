@@ -5,7 +5,7 @@
 import noUnquotedKeys from "./no-unquoted-keys";
 
 export default {
-    "rules": {
-        "no-unquoted-keys": noUnquotedKeys
-    }
+  "rules": {
+    "no-unquoted-keys": noUnquotedKeys
+  }
 };
