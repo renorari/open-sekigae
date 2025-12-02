@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@fontsource/inter": "^5.2.5",
-    "@mui/icons-material": "^7.1.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/inter": "^5.2.8",
+    "@mui/icons-material": "^7.3.5",
     "@mui/joy": "^5.0.0-beta.52",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -22,13 +22,13 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@stylistic/eslint-plugin-ts": "^4.4.1",
-    "@tailwindcss/postcss": "^4.1.7",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.5.0",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.48.0"
   }
 }
