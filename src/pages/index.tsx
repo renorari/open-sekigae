@@ -180,7 +180,7 @@ export default function HomePage() {
         const [memberASeatPos] = memberASeat;
         const [memberARow, memberACol] = memberASeatPos.split("-").map(Number) as [number, number];
         const [seatRow, seatCol] = seat.split("-").map(Number) as [number, number];
-        if (Math.abs(seatRow - memberARow) <= 2 && Math.abs(seatCol - memberACol) <= 2) return false;
+        if (Math.abs(seatRow - memberARow) <= 2 || Math.abs(seatCol - memberACol) <= 2) return false;
       }
       return true;
     });
