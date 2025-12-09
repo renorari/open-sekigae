@@ -8,7 +8,7 @@ interface MetadataProps {
 }
 
 export default function Metadata({ title, description, keywords, noindex }: MetadataProps) {
-  const viewTitle = title ? title + " - Open Sékigae" : "Open Sékigae";
+  const viewTitle = title ? title + " - Open Sékigae" : "Open Sékigae: サウンド付きくじ引き席替え";
   const viewDescription = description || "Open Sékigaeは、教室やイベント会場での座席配置を簡単に決めることができるオープンソースの席替えツールです。";
   const viewKeywords = keywords ? keywords.join(", ") : "れのらり, renorari, renorari.net, renorarinet, ренорари, ленолари, 席替え, 席替えツール, 座席表, 座席表ツール, オープンソース, オープンソースプロジェクト, オープンソース座席表";
 
