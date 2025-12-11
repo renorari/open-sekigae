@@ -8,63 +8,63 @@ body {
     .header,
     .sidebar,
     .modal {
-        display: none;
+        display: none !important;
     }
 
     .container,
     .main,
     .seats {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        border-radius: none;
-        border: none;
-        background: none;
-        overflow: unset;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-radius: none !important;
+        border: none !important;
+        background: none !important;
+        overflow: unset !important;
     }
 
     .seats {
-        padding: 2px;
-        gap: 0.5rem;
+        padding: 2px !important;
+        gap: 0.5rem !important;
     }
 
     .seats-container {
-        gap: 0;
+        gap: 0 !important;
     }
 
     .seats-row-container,
     .seats-column-container {
-        gap: 0;
+        gap: 0 !important;
     }
 
     .seat-spacer {
-        min-width: 0.5rem;
-        min-height: 0.5rem;
+        min-width: 0.5rem !important;
+        min-height: 0.5rem !important;
     }
 
     .seat {
-        background-color: #fff;
-        padding: 0;
-        color: #000;
-        outline: 1px solid #000;
-        border-radius: 0;
+        background-color: #fff !important;
+        padding: 0 !important;
+        color: #000 !important;
+        outline: 1px solid #000 !important;
+        border-radius: 0 !important;
     }
 
     .seat.disabled {
-        opacity: 0;
+        opacity: 0 !important;
     }
 
     .seat-number {
-        font-size: 1rem;
-        color: #000;
+        font-size: 1rem !important;
+        color: #000 !important;
     }
 
     .seat-name {
-        display: block;
-        color: #000;
+        display: block !important;
+        color: #000 !important;
     }
 
     .seat-name-pronouns {
-        color: #000;
+        color: #000 !important;
     }
 }
