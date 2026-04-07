@@ -2,7 +2,7 @@
 
 import "../styles/main.css";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import DataArrayRounded from "@mui/icons-material/DataArrayRounded";
 import HelpRounded from "@mui/icons-material/HelpRounded";
@@ -60,6 +60,26 @@ export default function HomePage() {
   const [rollAudio, setRollAudio] = useState<HTMLAudioElement | null>(null);
   const [rollCloseAudio, setRollCloseAudio] = useState<HTMLAudioElement | null>(null);
 
+  const memberIds = useMemo(() => {
+    return Array.from(members?.keys() || []).sort((a, b) => a - b);
+  }, [members]);
+
+  const getNextMemberId = (current: number | null) => {
+    if (memberIds.length === 0) return null;
+    if (!current) return memberIds[0] as number;
+    const currentIndex = memberIds.indexOf(current);
+    if (currentIndex === -1) return memberIds[0] as number;
+    return memberIds[(currentIndex + 1) % memberIds.length] as number;
+  };
+
+  const getPrevMemberId = (current: number | null) => {
+    if (memberIds.length === 0) return null;
+    if (!current) return memberIds[memberIds.length - 1] as number;
+    const currentIndex = memberIds.indexOf(current);
+    if (currentIndex === -1) return memberIds[memberIds.length - 1] as number;
+    return memberIds[(currentIndex - 1 + memberIds.length) % memberIds.length] as number;
+  };
+
   useEffect(() => {
     // 音声のロード
     setRollAudio(new Audio("/sounds/roll.mp3"));
@@ -109,15 +129,24 @@ export default function HomePage() {
     localStorage.setItem("settings", JSON.stringify(settings));
 
     // メンバー設定
-    setMembersInput(Array.from(members || []).map(([_, member]) => `${member.name}, ${member.pronouns}`).join("\n"));
+    setMembersInput(
+      Array.from(members || [])
+        .sort(([idA], [idB]) => idA - idB)
+        .map(([id, member]) => `${id}, ${member.name}, ${member.pronouns}`)
+        .join("\n")
+    );
     setDistanceMembersInput(Array.from(distanceMembers || []).map(([a, b]) => `${a}:${b}`).join("\n"));
 
     // 次の人の設定
-    setNext(!members || members.size === 0 ? null : (next ? next : 1));
+    setNext((prev) => {
+      if (memberIds.length === 0) return null;
+      if (prev && memberIds.includes(prev)) return prev;
+      return memberIds[0] as number;
+    });
   }, [
     seatRows, seatColumns, seatRowsSpacer, seatColumnsSpacer, seatFrontThreshold,
     disabledSeats, seats, members, distanceMembers, turn, viewFrontTable,
-    autoLotteryInterval, animationSteps, animationTime, audioEnabled
+    autoLotteryInterval, animationSteps, animationTime, audioEnabled, memberIds
   ]);
 
   const row = seatRows || 0;
@@ -160,7 +189,7 @@ export default function HomePage() {
     const assignedMembers = Array.from(seats.values());
     if (assignedMembers.includes(next)) {
       // 次の人に進む
-      const nextMember = next < members.size ? next + 1 : 1;
+      const nextMember = getNextMemberId(next);
       setNext(nextMember);
       return;
     }
@@ -297,11 +326,7 @@ export default function HomePage() {
           rollCloseAudio?.play().catch(() => { });
         }
         setSeats(new Map(originalSeats).set(selectedSeat, number));
-        if (next !== members?.size) {
-          setNext(next + 1);
-        } else {
-          setNext(1);
-        }
+        setNext(getNextMemberId(next));
       }
     };
 
@@ -388,10 +413,16 @@ export default function HomePage() {
                 </CardContent>
                 <CardActions>
                   <ButtonGroup variant="soft" >
-                    <IconButton onClick={() => { setNext(next ? next - 1 : null); }} disabled={!next || next <= 1}>
+                    <IconButton
+                      onClick={() => { setNext(getPrevMemberId(next)); }}
+                      disabled={!next || getPrevMemberId(next) === next}
+                    >
                       <KeyboardArrowLeft />
                     </IconButton>
-                    <IconButton onClick={() => { setNext(next ? next + 1 : null); }} disabled={!next || next >= (members ? members.size : 0)}>
+                    <IconButton
+                      onClick={() => { setNext(getNextMemberId(next)); }}
+                      disabled={!next || getNextMemberId(next) === next}
+                    >
                       <KeyboardArrowRight />
                     </IconButton>
                   </ButtonGroup>
@@ -623,15 +654,15 @@ export default function HomePage() {
 
             メンバーの名前と読み方を設定します。<br />
             <br />
-            番号は自動的に上から1, 2, 3...と割り当てられます。<br />
-            以下のように、名前と読み方を入力してください。
+            名簿番号は手入力です。欠番があっても利用できます。<br />
+            名簿番号, 名前, 読み方 の順で入力してください。
             <Card variant="soft" sx={{ "gap": 0 }}>
               <Typography level="body-sm">
                 例:
               </Typography>
-              山田太郎, やまだたろう
+              1, 山田太郎, やまだたろう
               <br />
-              鈴木花子, すずきはなこ
+              3, 鈴木花子, すずきはなこ
             </Card>
 
             <Box display="flex" flexDirection="column" sx={{ "gap": 2, "overflowY": "auto" }}>
@@ -639,7 +670,7 @@ export default function HomePage() {
                 minRows={10}
                 value={membersInput}
                 onChange={(e) => setMembersInput(e.target.value)}
-                placeholder="メンバーの名前と読み方を入力してください。"
+                placeholder="名簿番号, 名前, 読み方 の形式で入力してください。"
                 endDecorator={
                   <Typography level="body-xs" sx={{ "ml": "auto" }}>
                     {membersInput.trim().length > 0 ? membersInput.trim().split("\n").length : 0}行
@@ -650,10 +681,11 @@ export default function HomePage() {
 
             <Button variant="solid" onClick={() => {
               const newMembers = new Map<number, Member>();
-              membersInput.trim().split("\n").forEach((line, index) => {
-                const [name, pronouns] = line.split(",").map(part => part.trim());
-                if (name && pronouns) {
-                  newMembers.set(index + 1, { name, pronouns });
+              membersInput.trim().split("\n").forEach((line) => {
+                const [idText, name, pronouns] = line.split(",").map(part => part.trim());
+                const id = Number(idText);
+                if (Number.isInteger(id) && id > 0 && name && pronouns) {
+                  newMembers.set(id, { name, pronouns });
                 }
               });
               setMembers(newMembers);
